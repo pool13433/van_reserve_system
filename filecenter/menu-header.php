@@ -47,7 +47,7 @@
                 <a href="#">Link</a>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">เมนูระบบ<strong class="caret"></strong></a>
                 <ul class="dropdown-menu">
                     <li>
                         <a href="#">Action</a>
@@ -61,7 +61,9 @@
                     <li class="divider">
                     </li>
                     <li>
-                        <a href="#">Separated link</a>
+                        <a href="javascript:void(0)" onclick="logout('../actionDb/person.php?action=logout')">
+                            <i class="glyphicon glyphicon-log-out"></i> ออกจากระบบ
+                        </a>
                     </li>
                 </ul>
             </li>

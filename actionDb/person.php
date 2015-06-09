@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 require '../actionDb/variableGlobal.php';
 require_once '../mysql_con/PDOMysql.php';
 $pdo = new PDOMysql();
@@ -33,14 +34,14 @@ switch ($_GET['action']) {
                 ':by' => 1,
                 ':status' => $status,
             );
-            if (empty($_POST['id'])) {                
+            if (empty($_POST['id'])) {
                 $sql = ' INSERT INTO `person`( `fb_id`, `code`, `fname`,';
                 $sql .= ' `lname`, `username`, `password`, `idcard`, `mobile`, ';
                 $sql .= ' `email`, `updatedate`, `updateby`, `status`) ';
                 $sql .= ' VALUES (';
                 $sql .= ' :fb_id,:code,:fname,';
                 $sql .= ' :lname,:username,:password,:idcard,:mobile,';
-                $sql .= ' :email,NOW(),:by,:status)';                
+                $sql .= ' :email,NOW(),:by,:status)';
             } else {
                 $sql = ' UPDATE `person` SET ';
                 $sql .= ' `fb_id`=:fb_id,`code`=:code,';
@@ -48,13 +49,13 @@ switch ($_GET['action']) {
                 $sql .= ' `password`=:password,`idcard`=:idcard,`mobile`=:mobile,';
                 $sql .= ' `email`=:email,`updatedate`=NOW(),`updateby`=:by,';
                 $sql .= ' `status`=:status ';
-                $sql .= ' WHERE id =:id';                
+                $sql .= ' WHERE id =:id';
                 $values['id'] = $id;
             }
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute($values);
             if ($exe) {
-                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=list-person&status='.$status);
+                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=list-person&status=' . $status);
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'บันทึก ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }
@@ -113,6 +114,12 @@ switch ($_GET['action']) {
             die();
         }
         $pdo->close();
+        break;
+    case 'logout':
+        if (!empty($_SESSION['person'])) {
+            unset($_SESSION['person']);
+            echo $pdo->returnJson(true, 'ออกจากระบบเรียบร้อย', 'ออกจากระบบเรียบร้อย', '../index.html');
+        }
         break;
     default:
         break;

@@ -11,6 +11,11 @@
     </head>
 
     <body>
+        <?php 
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        ?>
         <?php if (empty($_SESSION['person'])) { ?>
             <?php include './login.php'; ?>
         <?php } else { ?>

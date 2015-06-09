@@ -97,8 +97,23 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
-    
-    
+    case 'getProvincePlaceByProvinceId':
+        $province_id = $_GET['province_id'];
+        try {
+            $pdo->conn = $pdo->open();
+            $sql = 'SELECT * FROM province_place WHERE pv_id =:province_id ';
+            $stmt = $pdo->conn->prepare($sql);
+            $stmt->execute(array(
+                ':province_id' => intval($province_id),
+            ));
+            $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+            echo json_encode($results);
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
     default:
         break;
 }
