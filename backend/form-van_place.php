@@ -82,7 +82,7 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
                             <td style="width: 8%;"><?= ($key + 1) ?></td>                                                    
                             <td><?= $value->pvp_name ?></td>
                             <td style="width: 8%;">
-                                <input type="hidden" name="" value="<?= $value->pvp_id ?>"/>
+                                <input type="hidden" name="" value="<?= $value->vp_id ?>"/>
                                 <input type="text" class="form-control" name="hierarchy" value="<?= $value->vp_hierarchy ?>" />
                             </td>
                             <td style="width: 8%;">

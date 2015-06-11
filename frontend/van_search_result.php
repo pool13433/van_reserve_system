@@ -35,15 +35,15 @@
                     $go_end = $_GET['go_end'];
                     $go_end_place = $_GET['go_end_place'];
 
-                    $sql = ' SELECT v.*,';
-                    $sql .= ' ';
+                    $sql = ' SELECT v.*,';                    
                     $sql .= ' (SELECT COUNT(*) FROM van_chair WHERE v_id = v.v_id AND vc_status = 0) as chair_empty,';
                     $sql .= ' (SELECT COUNT(*) FROM van_chair WHERE v_id = v.v_id AND vc_status = 1) as chair_full';
-                    $sql .= ' FROM van v';                   
-                    $sql .= ' LEFT JOIN van_place vp ON vp.v_id = v.v_id';
-                    $sql .= ' WHERE vp.pvp_id =:go_start_place';
-                    $sql .= ' OR vp.pvp_id =:go_end_place';
-                    //echo '<pre>sql ::=='.$sql.'</pre>';
+                    $sql .= ' FROM van v';           
+                    $sql .= ' WHERE EXISTS (SELECT \'x\' FROM van_place vp WHERE vp.v_id = v.v_id';
+                    $sql .= ' AND (vp.pvp_id =:go_start_place OR ';
+                    $sql .= ' vp.pvp_id =:go_end_place';
+                    $sql .= ' ))';
+                    echo '<pre>sql ::=='.$sql.'</pre>';
                     $stmt = $pdo->conn->prepare($sql);
                     $stmt->execute(array(
                         ':go_start_place' => $go_start_place,

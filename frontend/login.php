@@ -40,13 +40,18 @@
             <div class="modal-footer">
                 <div class="col-md-12">
                     <span class="pull-right">                            
-                        <h4><a href="#"><i class="glyphicon glyphicon-registration-mark"></i> สมัครสมาชิก</a></h4>
+                        <h4>
+                            <a href="javascript:void(0)" data-toggle="modal" data-target="#dialog_register">
+                                <i class="glyphicon glyphicon-registration-mark"></i> สมัครสมาชิก
+                            </a>
+                        </h4>                        
                     </span>    
                 </div>	
             </div>
         </div>
     </div>
 </div>
+<?php require '../dialog/dialog_register.php';?>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#form_login').bootstrapValidator().on('success.form.bv', function (e) {

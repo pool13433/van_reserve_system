@@ -36,9 +36,20 @@ $(document).ready(function () {
 
 
     /*
-     * form validate
+     * ClockPicker referrence :: http://weareoutman.github.io/clockpicker/
      */
-
+    var clockpicker = $('.clockpicker').prop('readOnly', true);
+//    clockpicker.clockpicker()
+//            .find('input').change(function () {
+//        console.log(this.value);
+//    });
+    clockpicker.clockpicker({
+        donetext: 'เลือกเวลานี้',
+        placement: 'right',   // bottom,top,left,right
+        align: 'left',
+        //autoclose: true,
+        'default': 'now'
+    });
 
 });
 /*

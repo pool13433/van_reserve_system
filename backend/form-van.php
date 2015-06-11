@@ -12,6 +12,7 @@ $v_detail = '';
 $v_company = '';
 $v_driver = '';
 $v_chair = '0';
+$v_roadlength = '';
 $v_drivestart = '';
 $v_driveend = '';
 $v_updatedate = '';
@@ -34,6 +35,7 @@ if (!empty($_GET['id'])) {
     $v_company = $result->v_company;
     $v_driver = $result->v_driver;
     $v_chair = $result->v_chair;
+    $v_roadlength = $result->v_roadlength;
     $v_drivestart = $result->v_drivestart;
     $v_driveend = $result->v_driveend;
     $v_updatedate = $result->v_updatedate;
@@ -151,11 +153,21 @@ if (!empty($_GET['id'])) {
                 <div class="form-group">
                     <label for="v_company" class="col-sm-2 control-label">เวลารถออก</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control" placeholder="h:m"  name="drive_start" value="<?=$v_drivestart?>"/>
+                        <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
+                            <input type="text" class="form-control clockpicker" placeholder="h:m"  name="drive_start" value="<?= $v_drivestart ?>"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div> 
                     </div>
                     <label for="v_company" class="col-sm-2 control-label">เวลารถถึงที่หมาย</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control" placeholder="h:m" name="drive_end" value="<?=$v_driveend?>"/>
+                        <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
+                            <input type="text" class="form-control clockpicker" placeholder="h:m" name="drive_end" value="<?= $v_driveend ?>"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>  
                     </div>
                 </div>
                 <div class="form-group">
@@ -163,11 +175,34 @@ if (!empty($_GET['id'])) {
                     <?php require './map_van_chair.php'; ?>
                 </div>
                 <div class="form-group">
+                    <label for="v_chair" class="col-sm-2 control-label">ระยะทางรวม</label>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="v_roadlength" id="v_roadlength" 
+                                   digits placeholder="ระยะทางรวม" 
+                                   required data-bv-notempty-message="กรุณากรอกระยะทางรวม"
+                                   value="<?= $v_roadlength ?>"/>
+                            <label class="input-group-btn" for="date-fld">
+                                <span class="btn btn-default">
+                                    Km.
+                                </span>
+                            </label>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="v_chair" class="col-sm-2 control-label">จำนวนที่นั่ง</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" name="v_chair" id="v_chair" placeholder="จำนวนที่นั่ง" 
-                               required data-bv-notempty-message="กรุณากรอกจำนวนที่นั่ง" readonly
-                               value="<?= $v_chair ?>"/>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="v_chair" id="v_chair" placeholder="จำนวนที่นั่ง" 
+                                   required data-bv-notempty-message="กรุณากรอกจำนวนที่นั่ง" readonly
+                                   value="<?= $v_chair ?>"/>
+                            <label class="input-group-btn" for="date-fld">
+                                <span class="btn btn-default">
+                                    ที่นั่ง
+                                </span>
+                            </label>
+                        </div>      
                     </div>
                 </div>
             </div>
@@ -192,7 +227,16 @@ if (!empty($_GET['id'])) {
     $(document).ready(function () {
         //$('#v_chair').val(0);
         var formId = 'form_province_place';
-        $('#' + formId).bootstrapValidator().on('success.form.bv', function (e) {
+        $('#' + formId).bootstrapValidator({
+            fields: {
+                v_roadlength: {
+                    validators: {
+                        notEmpty: {message: 'กรุณากรอก ข้อมูลระยะทางรวม'},
+                        digits: {message: 'กรุณากรอก ตัวเลขเท่านั้น'},
+                    }
+                },
+            }
+        }).on('success.form.bv', function (e) {
             e.preventDefault();
             /*
              * postForm
@@ -247,6 +291,7 @@ if (!empty($_GET['id'])) {
         var van_id = $('#id').val();
         var name = $('#v_name').val();
         var driver = $('#v_driver').val();
+        var roadlength = $('#v_roadlength').val();
         var drive_start = $('input[name=drive_start]').val();
         var drive_end = $('input[name=drive_end]').val();
         var detail = $('textarea[name=v_detail]').val();
@@ -259,6 +304,7 @@ if (!empty($_GET['id'])) {
         obj.van_id = van_id;
         obj.name = name;
         obj.places = places;
+        obj.roadlength = roadlength;
         obj.drive_start = drive_start;
         obj.drive_end = drive_end;
         obj.driver = driver;

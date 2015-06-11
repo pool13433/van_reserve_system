@@ -17,6 +17,9 @@
                     <th>ลำดับ</th>
                     <th>ชื่อสายเดินรถ</th>
                     <th>บริษัท</th>
+                    <th>ระยะทาง</th>
+                    <th>ระยะเวลาออก</th>
+                    <th>ระยะเวลาถึง</th>
                     <th>พนักงานขับรถ</th>
                     <th>แก้ไข</th>
                     <th>ลบ</th>
@@ -38,7 +41,10 @@
                     <tr>
                         <td style="width: 8%;"><?= ($key + 1) ?></td>                                                    
                         <td><?= $value->v_name ?></td>
-                        <td><?= $value->c_name ?> กิโลเมตร</td>
+                        <td><?= $value->c_name ?></td>
+                        <td><?= $value->v_roadlength ?></td>
+                        <td><?= $value->v_drivestart ?></td>
+                        <td><?= $value->v_driveend ?></td>
                         <td><?= $value->fname . ' ' . $value->lname ?></td>
                         <td style="width: 8%;">
                             <a href="index.php?page=form-van&id=<?= $value->v_id ?>" class="btn btn-warning">

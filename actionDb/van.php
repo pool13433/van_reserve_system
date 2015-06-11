@@ -21,6 +21,7 @@ switch ($_GET['action']) {
             $drive_start = $obj_van['drive_start'];
             $drive_end = $obj_van['drive_end'];
             $chair = $obj_van['chair'];
+            $roadlength = $obj_van['roadlength'];
             $arrayPlace = $obj_van['places'];
             $arrayChairs = $obj_van['arrayChairs'];
             $values = array(
@@ -31,16 +32,17 @@ switch ($_GET['action']) {
                 ':drivestart' => $drive_start,
                 ':driveend' => $drive_end,
                 ':chair' => $chair,
+                ':roadlength' => $roadlength,
                 ':by' => 1
             );
             if (empty($van_id)) {
                 $sql = ' INSERT INTO `van`( `v_name`,`v_detail`,';
                 $sql .= ' `v_drivestart`,`v_driveend`,';
-                $sql .= ' `v_company`, `v_driver`, `v_chair`, `v_updatedate`,';
+                $sql .= ' `v_company`, `v_driver`, `v_chair`, v_roadlength,`v_updatedate`,';
                 $sql .= ' `v_updateby`) VALUES (';
                 $sql .= ' :name,:detail,';
                 $sql .= ' :drivestart,:driveend,';
-                $sql .= ' :company,:driver,:chair,NOW(),';
+                $sql .= ' :company,:driver,:chair,:roadlength,NOW(),';
                 $sql .= ' :by)';
                 $stmt = $pdo->conn->prepare($sql);
                 $exe = $stmt->execute($values);
@@ -55,7 +57,7 @@ switch ($_GET['action']) {
                 $sql .= ' `v_company`=:company,`v_driver`=:driver,';
                 $sql .= ' `v_chair`=:chair,`v_drivestart`=:drivestart,';
                 $sql .= ' `v_driveend`=:driveend,`v_updatedate`=NOW(),';
-                $sql .= ' `v_updateby`=:by ';
+                $sql .= ' v_roadlength =:roadlength,`v_updateby`=:by ';
                 $sql .= ' WHERE `v_id`=:v_id';
                 
                 $values['v_id'] = $van_id;

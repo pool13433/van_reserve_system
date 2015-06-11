@@ -7,23 +7,29 @@
         <meta name="author" content="Dashboard">
         <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
         <title>ระบบจองรถตู้ออนไลน์ [VSM VanSystemManage]</title>
-        <?php require '../filecenter/includeCssJs.php';?>
+        <?php require '../filecenter/includeCssJs.php'; ?>
     </head>
 
     <body>
-        <?php 
+        <?php
         if (!isset($_SESSION)) {
             session_start();
         }
         ?>
         <?php if (empty($_SESSION['person'])) { ?>
-            <?php include './login.php'; ?>
-        <?php } else { ?>
+            <?php
+            if (!empty($_GET['page']) && $_GET['page'] == 'register') {
+                include './register.php';
+            } else {
+                include './login.php';
+            }
+            ?>
+<?php } else { ?>
             <div class="container-fluid" style="margin-top: 100px;">                                     
                 <div class="row clearfix">
-                    <?php include '../filecenter/menu-header.php'; ?> 
+                        <?php include '../filecenter/menu-header.php'; ?> 
                     <div class="col-md-3 column">
-                        <?php include '../filecenter/menu-left.php'; ?>
+    <?php include '../filecenter/menu-left.php'; ?>
                     </div>
                     <div class="col-md-9 column">
                         <?php
@@ -46,8 +52,8 @@
 
                     </div>
                 </div>
-                <?php include '../filecenter/footer.php'; ?>
+            <?php include '../filecenter/footer.php'; ?>
             </div>
-        <?php } ?>
+<?php } ?>
     </body>
 </html>

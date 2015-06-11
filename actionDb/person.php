@@ -65,6 +65,60 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
+    case 'register':
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname'];
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $idcard = $_POST['idcard'];
+        $mobile = $_POST['mobile'];
+        $email = $_POST['email'];
+//        $updatedate =$_POST['updatedate'];
+//        $updateby = $_POST['updateby'];
+        $status = CUSTOMER_ID;
+        try {
+            $pdo->conn = $pdo->open();
+            $values = array(
+                ':fb_id' => '',
+                ':code' => $pdo->createPersonSerialCode($status),
+                ':fname' => $fname,
+                ':lname' => $lname,
+                ':username' => $username,
+                ':password' => $password,
+                ':idcard' => $idcard,
+                ':mobile' => $mobile,
+                ':email' => $email,
+                ':by' => 1,
+                ':status' => $status,
+            );
+            $sql = ' INSERT INTO `person`( `fb_id`, `code`, `fname`,';
+            $sql .= ' `lname`, `username`, `password`, `idcard`, `mobile`, ';
+            $sql .= ' `email`, `updatedate`, `updateby`, `status`) ';
+            $sql .= ' VALUES (';
+            $sql .= ' :fb_id,:code,:fname,';
+            $sql .= ' :lname,:username,:password,:idcard,:mobile,';
+            $sql .= ' :email,NOW(),:by,:status)';
+            $stmt = $pdo->conn->prepare($sql);
+            $exe = $stmt->execute($values);
+            if ($exe) {
+                $per_id = $pdo->getLastInsertId();
+                $stmt = $pdo->conn->prepare('SELECT * FROM person WHERE id=:person_id');
+                $stmt->execute(array(
+                    ':person_id' => $per_id,
+                ));
+                $result = $stmt->fetch(PDO::FETCH_OBJ);
+                $person = $_SESSION['person'] = $result;
+
+                echo $pdo->returnJson(true, 'สมัครสมาชิก', 'สมัครสมาชิก สำเร็จ', './index.php?page=home');
+            } else {
+                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'บันทึก ไม่สำเร็จ [ ' . $sql . ' ]', '');
+            }
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
     case 'delete':
         try {
             $pdo->conn = $pdo->open();
@@ -120,6 +174,26 @@ switch ($_GET['action']) {
             unset($_SESSION['person']);
             echo $pdo->returnJson(true, 'ออกจากระบบเรียบร้อย', 'ออกจากระบบเรียบร้อย', '../index.html');
         }
+        break;
+    case 'checkUsername':
+        try {
+            $pdo->conn = $pdo->open();
+            $values = array(
+                ':username' => $_GET['username'],
+            );
+            $sql = ' SELECT * FROM person WHERE username= =:username';
+            $stmt = $pdo->conn->prepare($sql);
+            $exe = $stmt->execute($values);
+            if ($exe) {
+                echo json_encode(true);
+            } else {
+                echo json_encode(false);
+            }
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
         break;
     default:
         break;

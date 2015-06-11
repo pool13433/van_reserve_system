@@ -23,6 +23,12 @@
 <link rel="stylesheet" href="../assets/bootstrap-select/dist/css/bootstrap-select.css"/>
 <script type="text/javascript" src="../assets/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
+
+<link rel="stylesheet" type="text/css" href="../assets/clockpicker/dist/bootstrap-clockpicker.min.css">
+<link rel="stylesheet" type="text/css" href="../assets/clockpicker/assets/css/github.min.css">
+<script type="text/javascript" src="../assets/clockpicker/dist/jquery-clockpicker.min.js"></script>
+
+
 <!-- Custom Script-->
 <script type="text/javascript" src="../js/vanScript.js"></script>
 <script type="text/javascript" src="../js/vanValidateScript.js"></script>
