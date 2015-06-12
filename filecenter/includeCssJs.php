@@ -30,6 +30,7 @@
 
 
 <!-- Custom Script-->
+<link rel="stylesheet" href="../css/vanStyle.css"/>
 <script type="text/javascript" src="../js/vanScript.js"></script>
 <script type="text/javascript" src="../js/vanValidateScript.js"></script>
 <script type="text/javascript" src="../js/vanUtilScript.js"></script>

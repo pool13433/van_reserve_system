@@ -182,19 +182,28 @@ $authen = $_SESSION['person'];
     <?php } else { ?>
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h4 class="panel-title">
+                <h2 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-user">
                         </span>เมนูเกี่ยวกับระบบ</a>
-                </h4>
+                </h2>
             </div>
             <div id="collapseThree" class="panel-collapse collapse">
                 <div class="panel-body">
                     <table class="table">
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=van_search">เริ่มค้นหาสายเดินรถ</a>
+                                <a href="index.php?page=van_search">
+                                    <h4><i class="glyphicon glyphicon-search"></i> เริ่มค้นหาสายเดินรถ</h4>
+                                </a>
                             </td>
-                        </tr>                           
+                        </tr>     
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <a href="index.php?page=history_reserve">
+                                    <h4><i class="glyphicon glyphicon-list-alt"></i> รายการจองรถทั้งหมด</h4>
+                                </a>
+                            </td>
+                        </tr>   
                     </table>
                 </div>
             </div>

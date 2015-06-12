@@ -4,10 +4,13 @@ $pdo = new PDOMysql();
 $pdo->conn = $pdo->open();
 ?>
 <div class="panel panel-primary">
-    <div class="panel-heading clearfix">
-        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-            <i class="glyphicon glyphicon-list-alt"></i> ค้นหาเส้นทางเดินรถ
-        </h4>
+    <div class="panel-heading">
+        <!--        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
+                    <i class="glyphicon glyphicon-list-alt"></i> ค้นหาเส้นทางเดินรถ
+                </h4>-->
+        <ol class="breadcrumb">
+            <li class="active"><a href="#">ค้นหาเส้นทางการเดินรถ</a></li>
+        </ol>
     </div>
     <div class="panel-body">
         <div class="col-lg-12">
@@ -21,7 +24,11 @@ $pdo->conn = $pdo->open();
                     <label for="province" class="col-sm-2 control-label">จังหวัดเริ่มเดินทาง</label>
                     <div class="col-sm-4">
                         <?php
-                        $stmt = $pdo->conn->prepare('SELECT * FROM province ORDER BY pv_name ASC');
+                        $sql = 'SELECT * ';
+                        $sql .= ' FROM province p';
+                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM province_place pvp WHERE pvp.pv_id = p.pv_id)';
+                        $sql .= ' ORDER BY pv_name ASC ';
+                        $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute();
                         $provinces = $stmt->fetchAll(PDO::FETCH_OBJ);
                         ?>
@@ -46,7 +53,11 @@ $pdo->conn = $pdo->open();
                     <label for="province" class="col-sm-2 control-label">จังหวัดปลายทาง</label>
                     <div class="col-sm-4">
                         <?php
-                        $stmt = $pdo->conn->prepare('SELECT * FROM province ORDER BY pv_name ASC');
+                        $sql = 'SELECT * ';
+                        $sql .= ' FROM province p';
+                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM province_place pvp WHERE pvp.pv_id = p.pv_id)';
+                        $sql .= ' ORDER BY pv_name ASC ';
+                        $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute();
                         $provinces = $stmt->fetchAll(PDO::FETCH_OBJ);
                         ?>

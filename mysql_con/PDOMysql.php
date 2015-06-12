@@ -52,18 +52,7 @@ class PDOMysql {
         ));
     }
 
-    function getDataList($params, $list) {
-        $array = $list;
-        if (!empty($params)):
-            $result = "";
-            foreach ($array as $key => $value):
-                if ($key == $params):
-                    $result = $value;
-                endif;
-            endforeach;
-            return $result;
-        endif;
-    }
+    
 
     function format_date($format, $date) {
         if ($date == null) {

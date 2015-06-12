@@ -92,11 +92,4 @@ switch ($_GET['action']) {
         break;
 }
 
-function getPersonById($id) {
-    $pdo = new PDOMysql();
-    $pdo->conn = $pdo->open();
-    $stmt = $pdo->conn->prepare('SELECT * FROM person WHERE id =:id');
-    $stmt->execute(array(':id' => $_GET['id']));
-    $result = $stmt->fetch(PDO::FETCH_OBJ);
-    return $result;
-}
+

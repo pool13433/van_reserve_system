@@ -10,9 +10,9 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 30%"></th>
-                            <th></th>
-                        </tr>
+                            <th style="width: 30%">ชื่อสายรถ</th>
+                            <th><h3><label class="label label-success"><?= $result->v_name ?></label></h3></th>
+                    </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -29,18 +29,18 @@
                         </tr>
                         <tr>
                             <td><h2>เวลาออก</h2></td>
-                            <td><h3><label class="label label-info"><?=$result->v_drivestart?></label></h3></td>
+                            <td><h3><label class="label label-info"><?= $result->v_drivestart ?></label></h3></td>
                         </tr>
                         <tr>
                             <td><h2>เวลาถึง</h2></td>
-                            <td><h3><label class="label label-info"><?=$result->v_driveend?></label></h3></td>
+                            <td><h3><label class="label label-info"><?= $result->v_driveend ?></label></h3></td>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" onclick="saveReserveChairVan()">
                     <i class="glyphicon glyphicon-save"></i> ยืนยันการจอง
                 </button>
                 <button type="button" class="btn btn-warning" data-dismiss="modal">

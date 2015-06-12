@@ -103,16 +103,16 @@ switch ($_GET['action']) {
                 if (count($arrayChairs) > 0) { // ต้องมีที่นั่งด้วย
                     foreach ($arrayChairs as $index => $chair) {
                         $sql = ' INSERT INTO `van_chair`(`vc_x`,`vc_y`, ';
-                        $sql .= ' `vc_label`, `v_id`, `vc_status`) VALUES (';
+                        $sql .= ' `vc_label`, `v_id`, `vc_cusid`) VALUES (';
                         $sql .= ' :chair_x,:chair_y,';
-                        $sql .= ' :label,:van_id,:status)';
+                        $sql .= ' :label,:van_id,:customer_id)';
                         $stmt = $pdo->conn->prepare($sql);
                         $exe = $stmt->execute(array(
                             ':chair_x' => $chair['chair_x'],
                             ':chair_y' => $chair['chair_y'],
                             ':label' => $chair['value'],
                             ':van_id' => $van_id,
-                            ':status' => 0,
+                            ':customer_id' => 0,
                         ));
                     }
                 }

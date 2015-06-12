@@ -24,12 +24,12 @@
                 include './login.php';
             }
             ?>
-<?php } else { ?>
+        <?php } else { ?>
             <div class="container-fluid" style="margin-top: 100px;">                                     
                 <div class="row clearfix">
-                        <?php include '../filecenter/menu-header.php'; ?> 
+                    <?php include '../filecenter/menu-header.php'; ?> 
                     <div class="col-md-3 column">
-    <?php include '../filecenter/menu-left.php'; ?>
+                        <?php include '../filecenter/menu-left.php'; ?>
                     </div>
                     <div class="col-md-9 column">
                         <?php
@@ -52,8 +52,8 @@
 
                     </div>
                 </div>
-            <?php include '../filecenter/footer.php'; ?>
+                <?php include '../filecenter/footer.php'; ?>
             </div>
-<?php } ?>
+        <?php } ?>
     </body>
 </html>
