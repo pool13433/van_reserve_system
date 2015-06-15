@@ -1,5 +1,9 @@
-<?php if (empty($_GET['go_start_place']) && empty($_GET['go_end_place'])) { ?>
+<?php if (empty($_GET['go_start_place']) || empty($_GET['go_end_place'])) { ?>
     <script type="text/javascript">alert('กรุณาเลือก สถานที่ในจังหวัดก่อน');
+        window.location.href = './index.php?page=van_search';
+    </script>
+<?php } else if ($_GET['go_start_place'] == $_GET['go_end_place']) { ?>
+    <script type = "text/javascript" > alert('กรุณาเลือก สถานที่ในจังหวัดคนละที่กัน');
         window.location.href = './index.php?page=van_search';
     </script>
 <?php } else { ?>
@@ -20,14 +24,14 @@
                         <th>ที่นั่งทั้งหมด</th>
                         <th>เวลาออก</th>
                         <th>เวลาถึง</th>
-                        <th>ที่นั่งว่าง</th>
-                        <th>ที่นั่งเต็ม</th>
-                        <th>ลบ</th>
+    <!--                        <th>ที่นั่งว่าง</th>
+                        <th>ที่นั่งเต็ม</th>-->
+                        <th>เลือก</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    if (!empty($_GET['go_start']) && !empty($_GET['go_end'])) {
+                    if (!empty($_GET['go_start_place']) || !empty($_GET['go_end_place'])) {
                         $pdo = new PDOMysql();
                         $pdo->conn = $pdo->open();
 
@@ -37,14 +41,22 @@
                         $go_end_place = $_GET['go_end_place'];
 
                         $sql = ' SELECT v.*,';
-                        $sql .= ' (SELECT COUNT(*) FROM van_chair WHERE v_id = v.v_id AND vc_cusid = \'\') as chair_empty,';
-                        $sql .= ' (SELECT COUNT(*) FROM van_chair WHERE v_id = v.v_id AND vc_cusid != \'\') as chair_full';
+
+                        $sql .= ' ( SELECT COUNT(*) FROM van_chair vc ';
+                        $sql .= ' LEFT JOIN reserve_chair rc ON rc.vc_id = vc.vc_id ';
+                        $sql .= ' LEFT JOIN reserve r ON r.rs_id = rc.rs_id WHERE rs_status IS NULL) as chair_empty,';
+
+                        $sql .= ' ( SELECT COUNT(*) FROM van_chair vc ';
+                        $sql .= ' LEFT JOIN reserve_chair rc ON rc.vc_id = vc.vc_id ';
+                        $sql .= ' LEFT JOIN reserve r ON r.rs_id = rc.rs_id WHERE rs_status IS NOT NULL) as chair_full,';
+
+                        $sql .= ' vp.*';
                         $sql .= ' FROM van v';
-                        $sql .= ' WHERE EXISTS (SELECT \'x\' FROM van_place vp WHERE vp.v_id = v.v_id';                        
-                        $sql .= ' AND (vp.pvp_id =:go_start_place OR ';
-                        $sql .= ' vp.pvp_id =:go_end_place';
-                        $sql .= ' ))';
-                        echo '<pre>sql ::==' . $sql . '</pre>';
+                        $sql .= ' LEFT JOIN van_place vp ON vp.v_id = v.v_id';
+                        $sql .= ' WHERE  vp.pvp_id IN(:go_start_place,:go_end_place)';
+                        $sql .= ' GROUP BY v.v_id';
+
+                        //echo '<pre>sql ::==' . $sql . '</pre>';
                         $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute(array(
                             ':go_start_place' => $go_start_place,
@@ -59,10 +71,10 @@
                                 <td><?= $value->v_chair ?></td>
                                 <td><?= $value->v_drivestart ?></td>
                                 <td><?= $value->v_driveend ?></td>
-                                <td><?= $value->chair_empty ?></td>
-                                <td><?= $value->chair_full ?></td>
+            <!--                                <td><?= $value->chair_empty ?></td>
+                                <td><?= $value->chair_full ?></td>-->
                                 <td style="width: 8%;">
-                                    <a href="index.php?page=van_choose_detail&van_id=<?= $value->v_id ?>&go_start=<?=$_GET['go_start']?>&go_start_place=<?=$_GET['go_start_place']?>&go_end=<?=$_GET['go_end']?>&go_end_place=<?=$_GET['go_end_place']?>" class="btn btn-warning">
+                                    <a href="index.php?page=van_choose_detail&van_id=<?= $value->v_id ?>&go_start=<?= $_GET['go_start'] ?>&go_start_place=<?= $_GET['go_start_place'] ?>&go_end=<?= $_GET['go_end'] ?>&go_end_place=<?= $_GET['go_end_place'] ?>" class="btn btn-warning">
                                         <i class="glyphicon glyphicon-pencil"></i>เลือก
                                     </a>
                                 </td>

@@ -201,3 +201,6 @@ function jsonStringToJsonObject(myJSONtext) {
     var myObject = eval('(' + myJSONtext + ')');
     return myObject;
 }
+function parseNegativeIntToPositiveInt(value){ // แปลง เต็มลบ ไป เต็มบวก
+    return value.toString().replace("-","");
+}

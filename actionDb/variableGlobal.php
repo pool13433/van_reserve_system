@@ -15,6 +15,9 @@ define('RS_RESERVE_CANCLE', '2');
 define('RS_PAY_OVERTIME', '3');
 
 
+define('PLACE_BEGIN', 'place_begin');
+define('PLACE_END', 'place_end');
+
 define('SESSON_PERSON_ID', 1);
 
 function arrayReserveStatus() {

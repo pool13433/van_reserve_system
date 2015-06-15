@@ -16,8 +16,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><h2>เส้นทาง</h2></td>
-                            <td id="road"></td>
+                            <td><h2>เส้นทางเริ่มต้น</h2></td>
+                            <td id="road_begin"></td>
+                        </tr>
+                        <tr>
+                            <td><h2>เส้นทางจุดหมาย</h2></td>
+                            <td id="road_end"></td>
                         </tr>
                         <tr>
                             <td><h2>ที่นั่ง</h2></td>

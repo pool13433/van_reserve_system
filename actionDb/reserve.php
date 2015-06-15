@@ -11,12 +11,13 @@ switch ($_GET['action']) {
         $arrayPlace = [];
         $arrayChairs = [];
         $jsonListChairs = $_POST['jsonListChairs'];
-        $jsonListPlaces = $_POST['jsonListPlaces'];
+        $jsonObjectPlaces = $_POST['jsonObjectPlace'];
         $van_id = $_POST['van_id'];
         $price = $_POST['price'];
+        $reserve_date = $_POST['reserve_date'];
 
         $arrayChairs = json_decode($jsonListChairs, true);
-        $arrayPlace = json_decode($jsonListPlaces, true);
+        $objPlace = json_decode($jsonObjectPlaces, true);
 //        var_dump($arrayPlace[0]);
 //        var_dump($arrayPlace[1]);
         try {
@@ -25,41 +26,51 @@ switch ($_GET['action']) {
                 ':cus_id' => $authen->id,
                 ':van_id' => $van_id,
                 ':price' => $price,
-                ':place_begin' => $arrayPlace[0]['vp_id'],
-                ':place_end' => $arrayPlace[1]['vp_id'],
+                ':place_begin' => $objPlace['place_begin_id'],
+                ':place_end' => $objPlace['place_end_id'],
                 ':by' => 1,
                 ':status' => RS_RESERVE_SUCCESS,
+                ':reserve_date' => $reserve_date,
             );
             if (empty($_POST['id'])) {
                 $sql = ' INSERT INTO `reserve`(';
                 $sql .=' `cus_id`, `v_id`, `rs_price`,';
                 $sql .=' `vp_idstart`, `vp_idend`, `rs_createdate`, ';
-                $sql .=' `rs_updateby`,rs_status) VALUES (';
+                $sql .=' `rs_updateby`,rs_status,rs_usabledate) VALUES (';
                 $sql .=' :cus_id,:van_id,:price,';
                 $sql .=' :place_begin,:place_end,NOW(),';
-                $sql .=' :by,:status)';
+                $sql .=' :by,:status,STR_TO_DATE(:reserve_date,\'%d/%m/%Y\'))';
                 $sql .= ' ';
+                //STR_TO_DATE('06/06/2015', '%d/%m/%Y')
             } else {
-                $sql = 'UPDATE  reserve SET v_name = :name,`v_updateby` =:by,v_updatedate = NOW() WHERE v_id =:id  ';
+                $sql = 'UPDATE  reserve_chair SET v_name = :name,`v_updateby` =:by,v_updatedate = NOW() WHERE v_id =:id  ';
                 $values['id'] = $id;
             }
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute($values);
+            $reserve_chair_id = $pdo->getLastInsertId();
             if ($exe) {
                 // update ที่นั่งใน เก้าอี้รถตู้
                 foreach ($arrayChairs as $index => $chair) {
-                    $sql = 'UPDATE van_chair SET ';
-                    $sql .= ' vc_cusid =:customer_id';
-                    $sql .= ' WHERE vc_id =:vanplace_id';
+                    /* $sql = 'UPDATE van_chair SET ';
+                      $sql .= ' vc_cusid =:customer_id';
+                      $sql .= ' WHERE vc_id =:vanplace_id';
+                      $stmt = $pdo->conn->prepare($sql);
+                      $exe = $stmt->execute(array(
+                      ':customer_id' => $authen->id,
+                      ':vanplace_id' => $chair['value'],
+                      )); */
+                    $sql = ' INSERT INTO `reserve_chair`(`vc_id`, `rs_id`,rsc_usabledate) VALUES (:vanplace_id,:reserve_id,STR_TO_DATE(:usabledate,\'%d/%m/%Y\'))';
                     $stmt = $pdo->conn->prepare($sql);
                     $exe = $stmt->execute(array(
-                        ':customer_id' => $authen->id,
                         ':vanplace_id' => $chair['value'],
+                        ':reserve_id' => $reserve_chair_id,
+                        ':usabledate' => $reserve_date,
                     ));
                 }
             }
             if ($exe) {
-                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=van_complete');
+                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=van_complete&reserve_id=' . $reserve_chair_id);
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'บันทึก ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }
@@ -72,13 +83,13 @@ switch ($_GET['action']) {
     case 'delete':
         try {
             $pdo->conn = $pdo->open();
-            $sql = 'DELETE FROM reserve WHERE v_id =:id';
+            $sql = 'DELETE FROM reserve_chair WHERE v_id =:id';
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute(array(
                 ':id' => $_POST['id'],
             ));
             if ($exe) {
-                echo $pdo->returnJson(true, 'ลบข้อมูล', 'ลบสำเร็จ', './index.php?page=list-reserve');
+                echo $pdo->returnJson(true, 'ลบข้อมูล', 'ลบสำเร็จ', './index.php?page=list-reserve_chair');
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ลบ ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }

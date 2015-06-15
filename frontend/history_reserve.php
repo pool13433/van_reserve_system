@@ -68,7 +68,7 @@ include '../mysql_con/PDOMysql.php';
                             </a>                            
                         </td>
                         <td style="width: 8%;">
-                            <a href="#" class="btn btn-primary btn-sm" onclick="printInvoiceByCase()">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="printInvoiceByCase(<?= $value->rs_id?>)">
                                 <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงิน      
                             </a>                            
                         </td>
@@ -79,12 +79,12 @@ include '../mysql_con/PDOMysql.php';
     </div>
 </div>
 <script type="text/javascript">
-    function printInvoiceByCase() {
+    function printInvoiceByCase(reserve_id) {
         //                var news_group = $('#group_id').val();
         //                var news_status = $('#news_status').val();
         //                var startdate = $('#startdate').val();
         //                var enddate = $('#enddate').val();
-        var url = 'http://localhost/van/report/invoice.php';
+        var url = 'http://localhost/van/report/invoice.php?reserve_id='+reserve_id;
         //                url += '&news_status=' + news_status;
         //                url += '&startdate=' + startdate;
         //                url += '&enddate=' + enddate;

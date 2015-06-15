@@ -159,7 +159,7 @@ switch ($_GET['action']) {
                 if ($result->status == EMPLOYEE_ID || $result->status == ONWER_ID) {
                     $url = '../backend/index.php?page=list-province';
                 } else {
-                    $url = './index.php?page=list-province';
+                    $url = './index.php?page=van_search';
                 }
                 echo $pdo->returnJson(true, 'แจ้งสถานะเข้าระบบ', 'แจ้งสถานะเข้าระบบสำเร็จ', $url);
             }

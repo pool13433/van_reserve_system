@@ -1,10 +1,10 @@
 <style type="text/css">
     .box{        
-        max-height: 80px;
-        max-width: 80px;
+        max-height: 50px;
+        max-width: 50px;
         display:inline-block;
         //width:3.333333%; /* 100% divided by 30 divs */
-        margin-left:-4px;
+        margin-left:-3px;
     }
     .input_primary {
         //color: rgb(255, 255, 255);
@@ -56,7 +56,7 @@
                 <tbody id="area_van_place">
                     <tr>
                         <td>
-                            <div class="box"><input type="text" class="form-control input_success"/></div>
+                            <div class="box"><input type="text" class="form-control input_success input-sm"/></div>
                         </td>
                     </tr>
                 </tbody>
@@ -88,17 +88,18 @@
         var html = '';
         html += ' <tr>';
         html += ' <td>';
+        html += ' <div class="input-group input-group-sm">';
         for (var i = 0; i < indexRow; i++) {
             if (i == indexRow - 1) {
-                html += ' <div class="box"><input type="text" class="form-control input_success"/></div>';
+                html += ' <div class="box"><input type="text" class="form-control input_success input-sm"/></div>';
             } else {
-                html += ' <div class="box"><input type="text" class="form-control input_info"/></div>';
+                html += ' <div class="box"><input type="text" class="form-control input_info input-sm"/></div>';
             }
         }
-        html += ' <div class="box"><button type="submit" class="btn btn-success">';
-        html += ' <i class="glyphicon glyphicon-plus"></i>';
-        html += ' </button></div>';
-        
+//        html += ' <div class="box"><button type="submit" class="btn btn-success btn-sm">';
+//        html += ' <i class="glyphicon glyphicon-plus"></i>';
+//        html += ' </button></div>';        
+        html += ' </div>';
         html += ' </td>';
         html += ' </tr>';
         parent.append(html);

@@ -17,16 +17,20 @@
         <p>กรุณาชำระเงินภายในระยะเวลาที่กำหนดไม่เช่นนั้นระบบจะถือว่าท่านยกเลิกการเดินทาง</p>
     </div>
     <div class="panel-footer">
-        <a href="#" class="btn btn-primary" onclick="printInvoice()">
+        <a href="javascript:void(0)" class="btn btn-primary" onclick="printInvoice()">
             <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงินเลย            
         </a>
+        <?php
+        $reserve_id = $_GET['reserve_id'];
+        ?>
         <script type="text/javascript">
             function printInvoice() {
+                    console.log('printInvoice ');
 //                var news_group = $('#group_id').val();
 //                var news_status = $('#news_status').val();
 //                var startdate = $('#startdate').val();
 //                var enddate = $('#enddate').val();
-                var url = 'http://localhost/van/report/invoice.php';
+                var url = 'http://localhost/van/report/invoice.php?reserve_id='+<?= $reserve_id ?>;
 //                url += '&news_status=' + news_status;
 //                url += '&startdate=' + startdate;
 //                url += '&enddate=' + enddate;

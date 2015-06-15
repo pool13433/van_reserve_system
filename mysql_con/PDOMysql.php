@@ -40,9 +40,11 @@ class PDOMysql {
     public function close() {
         $this->conn = null;
     }
-    public function getLastInsertId(){
+
+    public function getLastInsertId() {
         return $this->conn->lastInsertId();
     }
+
     public function returnJson($status, $title, $message, $url) {
         return json_encode(array(
             'status' => $status,
@@ -51,8 +53,6 @@ class PDOMysql {
             'url' => $url
         ));
     }
-
-    
 
     function format_date($format, $date) {
         if ($date == null) {
@@ -81,23 +81,32 @@ class PDOMysql {
         $sql .= ' ELSE \'ERR\'';
         $sql .= ' END prefix_status,';
         $sql .= ' LEFT(`code`,3) as prefix,'; // DRI,EMP,CUS,ONW
-        $sql .= ' LPAD(CONVERT(RIGHT(`code`, 4),UNSIGNED INTEGER)+1,4,0) as new_runnumber,'; 
+        $sql .= ' LPAD(CONVERT(RIGHT(`code`, 4),UNSIGNED INTEGER)+1,4,0) as new_runnumber,';
         $sql .= ' RIGHT(`code`, 4) as runnumber';
         $sql .= ' FROM person WHERE status =:status';
-        $sql .= ' ORDER BY RIGHT(`code`, 4) DESC LIMIT 0,1 ';        
+        $sql .= ' ORDER BY RIGHT(`code`, 4) DESC LIMIT 0,1 ';
         //echo 'sql ::=='.$sql;
-        
+
         $stmt = $pdo->conn->prepare($sql);
         $stmt->execute(array(':status' => $personStatus));
         $result = $stmt->fetch(PDO::FETCH_OBJ);
-        
+
         $prefix = $result->prefix;
         $runnumber = $result->runnumber;
         $year_ad = $result->year_ad;
         $newrunnumber = $result->new_runnumber;
-        return $prefix.$year_ad.$newrunnumber;
+        return $prefix . $year_ad . $newrunnumber;
     }
-    
+
+    function getPriceInKilomate() {
+        $pdo = new PDOMysql();
+        $pdo->conn = $pdo->open();
+        $stmt = $pdo->conn->prepare('SELECT vs_value FROM van_setting WHERE vs_id = 1');
+        $stmt->execute(array());
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return intval($result->vs_value);
+    }
+
     // ################### upload config #############
     public static $PATH_UPLOAD = "/images/uploads/";
     public static $PATH_UNZIP = "/images/unzip/";
@@ -111,4 +120,3 @@ class PDOMysql {
 
     // ################### upload config #############
 }
-

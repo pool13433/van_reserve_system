@@ -1,5 +1,5 @@
 <?php
-
+require './variableGlobal.php';
 require_once '../mysql_con/PDOMysql.php';
 $pdo = new PDOMysql();
 
@@ -118,6 +118,35 @@ switch ($_GET['action']) {
             $result = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             echo json_encode($result);
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
+    case 'getPlacesByHierarchy':
+        $place_type = $_GET['place_type'];
+        $van_id = $_GET['van_id'];
+        $hierarchy = $_GET['hierarchy'];
+        try {
+            $pdo->conn = $pdo->open();
+            $sql = 'SELECT vp.vp_id,vp.vp_kilomate,pvp.pvp_name,vp.vp_hierarchy,';
+            $sql .= ' (SELECT vs_value FROM van_setting) as price';
+            $sql .= ' FROM van_place vp ';
+            $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
+            $sql .= ' WHERE vp.v_id =:van_id';
+            if($place_type == PLACE_BEGIN){
+                $sql .= ' AND vp.vp_hierarchy > '.$hierarchy;
+            }else{
+                $sql .= ' AND vp.vp_hierarchy < '.$hierarchy;
+            }
+            $sql .= ' ORDER BY vp.vp_hierarchy ASC';
+            $stmt = $pdo->conn->prepare($sql);
+            //echo '<pre> sql ::=='.$sql.'</pre>';
+            $stmt->execute(array(':van_id' => $van_id));
+            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+            echo json_encode($result);
+            
         } catch (Exception $e) {
             print "Error!: " . $e->getMessage() . "<br/>";
             die();

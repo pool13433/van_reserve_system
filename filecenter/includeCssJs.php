@@ -1,6 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
 <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css"/>
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <!--        <link rel="stylesheet" type="text/css" href="../css/vanStyle.css"/>-->
 
 <!-- Jquery -->
@@ -24,9 +23,20 @@
 <script type="text/javascript" src="../assets/bootstrap-select/dist/js/bootstrap-select.js"></script>
 
 
+<!--  Select2 Mutiselect -->
+<link rel="stylesheet" href="../assets/select2-3.5.1/select2.css"/>
+<link rel="stylesheet" href="../assets/select2-3.5.1/select2-bootstrap.css"/>
+<script type="text/javascript" src="../assets/select2-3.5.1/select2.min.js"></script>
+
+<!-- clockpicker-->
 <link rel="stylesheet" type="text/css" href="../assets/clockpicker/dist/bootstrap-clockpicker.min.css">
 <link rel="stylesheet" type="text/css" href="../assets/clockpicker/assets/css/github.min.css">
 <script type="text/javascript" src="../assets/clockpicker/dist/jquery-clockpicker.min.js"></script>
+
+<!-- Datepicker-->
+<link rel="stylesheet" type="text/css" href="../assets/bootstrap-daterangepicker/daterangepicker-bs3.css">
+<script type="text/javascript" src="../assets/bootstrap-daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="../assets/bootstrap-daterangepicker/daterangepicker.js"></script>
 
 
 <!-- Custom Script-->

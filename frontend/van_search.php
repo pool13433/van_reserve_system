@@ -26,14 +26,17 @@ $pdo->conn = $pdo->open();
                         <?php
                         $sql = 'SELECT * ';
                         $sql .= ' FROM province p';
-                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM province_place pvp WHERE pvp.pv_id = p.pv_id)';
+                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM van_place vp  ';
+                        $sql .= ' JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id';
+                        $sql .= ' WHERE pvp.pv_id = p.pv_id)';
                         $sql .= ' ORDER BY pv_name ASC ';
+                        
                         $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute();
-                        $provinces = $stmt->fetchAll(PDO::FETCH_OBJ);
+                        $provinces_begin = $stmt->fetchAll(PDO::FETCH_OBJ);
                         ?>
                         <select class="form-control" name="go_start" onchange="changeProvinceGo(this, 'go_start_place')">
-                            <?php foreach ($provinces as $index => $province) { ?>
+                            <?php foreach ($provinces_begin as $index => $province) { ?>
                                 <?php if ($pv_id == $province->pv_id) { ?>
                                     <option value="<?= $province->pv_id ?>" selected><?= $province->pv_name ?></option>
                                 <?php } else { ?>
@@ -55,14 +58,16 @@ $pdo->conn = $pdo->open();
                         <?php
                         $sql = 'SELECT * ';
                         $sql .= ' FROM province p';
-                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM province_place pvp WHERE pvp.pv_id = p.pv_id)';
+                        $sql .= ' WHERE  EXISTS (SELECT \'x\' FROM van_place vp  ';
+                        $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id';
+                        $sql .= ' WHERE pvp.pv_id = p.pv_id)';
                         $sql .= ' ORDER BY pv_name ASC ';
                         $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute();
-                        $provinces = $stmt->fetchAll(PDO::FETCH_OBJ);
+                        $provinces_end = $stmt->fetchAll(PDO::FETCH_OBJ);
                         ?>
                         <select class="form-control" name="go_end" onchange="changeProvinceGo(this, 'go_end_place')">
-                            <?php foreach ($provinces as $index => $province) { ?>
+                            <?php foreach ($provinces_end as $index => $province) { ?>
                                 <?php if ($pv_id == $province->pv_id) { ?>
                                     <option value="<?= $province->pv_id ?>" selected><?= $province->pv_name ?></option>
                                 <?php } else { ?>
@@ -98,7 +103,7 @@ $pdo->conn = $pdo->open();
         $.get('../actionDb/province_place.php?action=getProvincePlaceByProvinceId', {
             province_id: value,
         }, function (json) {
-            var children = $('#' + child_d);
+            var children = $('#' + child_d).empty();
             $.each(json, function (index, objPlace) {
                 children.append('<option value="' + objPlace.pvp_id + '">' + objPlace.pvp_name + '</option>');
             });

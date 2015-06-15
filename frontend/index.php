@@ -28,10 +28,10 @@
             <div class="container-fluid" style="margin-top: 100px;">                                     
                 <div class="row clearfix">
                     <?php include '../filecenter/menu-header.php'; ?> 
-                    <div class="col-md-3 column">
+<!--                    <div class="col-md-3 column">
                         <?php include '../filecenter/menu-left.php'; ?>
-                    </div>
-                    <div class="col-md-9 column">
+                    </div>-->
+                    <div class="col-md-12 column">
                         <?php
                         // ตรวจสอบ ค่า ว่ามีการส่งค่ามาหรือเปล่า
                         if (!empty($_GET)) {  // มีค่า

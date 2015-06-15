@@ -20,6 +20,16 @@ var DATATABLE_LANGUAGE = {
         "sortDescending": ": เปิดใช้งานจะเรียงลำดับจากมากไปน้อยคอลัมน์"
     }
 };
+var DATEPICKER_LOCAL = {
+    applyLabel: 'เลือก',
+    cancelLabel: 'ยกเลิก',
+    fromLabel: 'จาก',
+    toLabel: 'ถึง',
+    customRangeLabel: 'Custom',
+    daysOfWeek: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
+    monthNames: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+    firstDay: 1
+};
 $(document).ready(function () {
     /*
      *  Load Data table
@@ -45,7 +55,7 @@ $(document).ready(function () {
 //    });
     clockpicker.clockpicker({
         donetext: 'เลือกเวลานี้',
-        placement: 'right',   // bottom,top,left,right
+        placement: 'right', // bottom,top,left,right
         align: 'left',
         //autoclose: true,
         'default': 'now'

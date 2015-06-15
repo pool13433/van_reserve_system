@@ -111,7 +111,7 @@ if (!empty($_GET['id'])) {
                         $provinces = $stmt->fetchAll(PDO::FETCH_OBJ);
                         //var_dump($provinces);
                         ?>
-                        <select class="selectpicker form-control btn-info" name="v_place" id="v_place" 
+                        <select class="select2 form-control" name="v_place" id="v_place" 
                                 multiple style="height: 100px;">
                                     <?php foreach ($provinces as $index => $province) { ?>
                                 <optgroup label="<?= $province->pv_name ?>">
@@ -154,7 +154,8 @@ if (!empty($_GET['id'])) {
                     <label for="v_company" class="col-sm-2 control-label">เวลารถออก</label>
                     <div class="col-sm-2">
                         <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                            <input type="text" class="form-control clockpicker" placeholder="h:m"  name="drive_start" value="<?= $v_drivestart ?>"/>
+                            <input type="text" class="form-control clockpicker" placeholder="h:m"  
+                                   required data-bv-notempty-message="กรุณากรอกเวลารถออก" name="drive_start" value="<?= $v_drivestart ?>"/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </span>
@@ -163,7 +164,8 @@ if (!empty($_GET['id'])) {
                     <label for="v_company" class="col-sm-2 control-label">เวลารถถึงที่หมาย</label>
                     <div class="col-sm-2">
                         <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                            <input type="text" class="form-control clockpicker" placeholder="h:m" name="drive_end" value="<?= $v_driveend ?>"/>
+                            <input type="text" class="form-control clockpicker" placeholder="h:m" 
+                                   required data-bv-notempty-message="กรุณากรอกเวลารถถึงที่หมาย" name="drive_end" value="<?= $v_driveend ?>"/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </span>
@@ -173,6 +175,18 @@ if (!empty($_GET['id'])) {
                 <div class="form-group">
                     <label for="v_chair" class="col-sm-2 control-label">สร้างผังที่นั่ง</label>
                     <?php require './map_van_chair.php'; ?>
+                </div>
+                <div class="form-group">
+                    <label for="v_chair" class="col-sm-2 control-label">วันที่จะเดินทาง</label>
+                    <div class="col-sm-3 input-prepend input-group">
+                        <span class="add-on input-group-addon">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                        </span>
+                        <input type="text"  name="reservation" id="daterangepicker" class="form-control" 
+                               id="useable_date"
+                               value="" readonly data-validation="required"                           
+                               data-validation-error-msg="กรุณากรอกข้อมูล" />                          
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="v_chair" class="col-sm-2 control-label">ระยะทางรวม</label>
@@ -224,7 +238,47 @@ if (!empty($_GET['id'])) {
     </div>
 </form>
 <script type="text/javascript">
+    var arrayPlaceIdSelect = [];
+    var select2Places;
+    var mutiSelect;
+    var select2;
     $(document).ready(function () {
+
+        /*
+         * Datepicker
+         */
+        /*
+         * Select2 Dropdown Mutiselect
+         */
+        //http://select2.github.io/select2/
+        select2 = $('.select2').select2({
+            placeholder: "-- กรุณาเลือกสถานที่ --"
+        });
+        select2.on("select2-selecting", function (e) {
+            //arrayPlaceSelect.push(e.choice);
+            arrayPlaceIdSelect.push(e.val);
+            console.log("selecting val=" + e.val + " choice=" + JSON.stringify(e.choice));
+            console.log(' print ::==' + print_properties_in_object(arrayPlaceIdSelect));
+        });
+        select2.on("select2-removing", function (e) {
+            $.each(arrayPlaceIdSelect, function (index, id) {
+                if (id === e.val) {
+                    arrayPlaceIdSelect.splice(index, 1);
+                    return false;
+                }
+            });
+            console.log("removing val=" + e.val + " choice=" + JSON.stringify(e.choice));
+            console.log(' print ::==' + print_properties_in_object(arrayPlaceIdSelect));
+        });
+        /*
+         * Select2 Dropdown Mutiselect
+         */
+
+        //select2.on
+        if ($('#id').val() !== '') {
+            setLoadVanForm();
+        }
+
         //$('#v_chair').val(0);
         var formId = 'form_province_place';
         $('#' + formId).bootstrapValidator({
@@ -242,7 +296,8 @@ if (!empty($_GET['id'])) {
              * postForm
              */
             var places = [];
-            places = $('.selectpicker').selectpicker('val');
+            places = arrayPlaceIdSelect; //select2Places.select2('val');
+            console.log('places ::==' + places);
             var v_place = $('#v_place').val();
             if (v_place === null || places.length < 2) {  //ต้องมีตั้งแต่ 2 ขึ้นไป เพราะต้องมี จุดเริ่มและจุด สิ้นสุด                 
                 alert('กรุณาเลือกสถานที่ ตั้งแต่ 2 ที่ขึ้นไปด้วย ระบบไม่ให้เลือกแค่ 1 สถานที่ กรุณาตรวจสอบ');
@@ -279,15 +334,10 @@ if (!empty($_GET['id'])) {
         /*
          * http://www.jqueryrain.com/?pYw7weSs
          */
-        $('.selectpicker').selectpicker({
-            style: 'btn-info'
-        });
-        if ($('#id').val() !== '') {
-            setLoadVanForm();
-        }
     });
     function getFormValue() {
-        var places = $('.selectpicker').selectpicker('val');
+        var places = arrayPlaceIdSelect; //$('.select2').select2('val');
+        console.log('places ::==' + print_properties_in_object(places));
         var van_id = $('#id').val();
         var name = $('#v_name').val();
         var driver = $('#v_driver').val();
@@ -328,7 +378,7 @@ if (!empty($_GET['id'])) {
             $.each(div_col2s, function (indexX, obj_div) {
                 var chair = $(obj_div).find('input');
                 var is_input = chair.is('input');
-                console.log('is_input ::==' + is_input);
+                //console.log('is_input ::==' + is_input);
                 if (is_input) {
                     var value = chair.val();
                     arrayChairs.push({'chair_x': indexX, 'chair_y': indexY, 'value': value});
@@ -396,9 +446,11 @@ if (!empty($_GET['id'])) {
             id: id
         }, function (jsonChairs) {
             $.each(jsonChairs, function (index, objectChair) {
-                arrayPlace.push(objectChair.pvp_id);
+                arrayPlace.push(objectChair.pvp_id.toString());
+                arrayPlaceIdSelect.push(objectChair.pvp_id.toString());
             });
-            $('.selectpicker').selectpicker('val', arrayPlace);
+            //$('.select2').select2('val', arrayPlace);
+            select2.select2("val", arrayPlace);
         }, 'json');
 
         //http://www.jqueryrain.com/?B83aD_dg

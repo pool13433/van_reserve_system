@@ -14,7 +14,72 @@ ob_start();
             <h1 style="text-align: center">ใบเสร็จจ่ายค่าจองรถตู้</h1>
         </div>
         <div> 
-            ใบจ่ายเงิน        
+            <?php
+            require_once '../mysql_con/PDOMysql.php';
+            $pdo = new PDOMysql();
+            $pdo->conn = $pdo->open();
+            $sql = ' SELECT  rs.*,p.*,v.*,';
+            $sql .= ' (SELECT pvp.pvp_name FROM van_place vp LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
+            $sql .=' WHERE vp.vp_id = rs.vp_idstart) as place_start,';
+            $sql .= ' (SELECT pvp.pvp_name FROM van_place vp LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id';
+            $sql .=' WHERE vp.vp_id = rs.vp_idend) as place_end';
+            $sql .= ' FROM reserve rs';
+            $sql .= ' LEFT JOIN van v ON v.v_id = rs.v_id';
+            $sql .= ' LEFT JOIN person p ON p.id = rs.cus_id';
+            $sql .= ' WHERE rs_id = ' . $_GET['reserve_id'];
+            //echo 'sql ::==' . $sql;
+            $stmt = $pdo->conn->prepare($sql);
+            $stmt->execute(array(':authen_id' => $authen->id));
+            $reserve = $stmt->fetch(PDO::FETCH_OBJ);
+            //var_dump($reserve);
+            ?>
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <td><h2>ชื่อสายรถ</h2></td>
+                        <td><?= $reserve->v_name ?></td>
+                    </tr>
+                    <tr>
+                        <td><h2>เส้นทาง</h2></td>
+                        <td>ขึ้นจาก <?= $reserve->place_start ?> ไปลงที่ <?= $reserve->place_end ?></td>
+                    </tr>
+                    <tr>
+                        <td><h2>ที่นั่ง</h2></td>
+                        <td>
+                            <ul>
+                                <?php
+                                $sql = 'SELECT * FROM van_chair  vc ';                                
+                                $sql .= ' WHERE vc.vc_cusid =:customer_id';
+                                //echo 'sql ::=='.$sql.' customer_id ::=='. $reserve->id;
+                                $stmt = $pdo->conn->prepare($sql);
+                                $stmt->execute(array(':customer_id' => $reserve->id));
+                                $places = $stmt->fetchAll(PDO::FETCH_OBJ);
+                                foreach ($places as $index => $place) {
+                                    ?>
+                                    <li><?= $place->vc_label ?></li>
+                                <?php } ?>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h2>ราคารวม</h2></td>
+                        <td><?=$reserve->rs_price?> บาท</td>
+                    </tr>
+                    <tr>
+                        <td><h2>เวลารถออก</h2></td>
+                        <td><?= $reserve->v_drivestart ?></td>
+                    </tr>
+                    <tr>
+                        <td><h2>เวลารถถึง</h2></td>
+                        <td><?= $reserve->v_driveend ?></td>
+                    </tr>
+                    <tr>
+                        <td><h2>วันที่ต้องชำระเงินก่อน</h2></td>
+                        <td><?= $reserve->v_driveend ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
     </body>
 </html>

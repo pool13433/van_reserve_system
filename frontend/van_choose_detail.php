@@ -10,6 +10,30 @@
     <div class="panel-body">
         <?php if (!empty($_GET['van_id'])) { ?>
             <?php $van_id = $_GET['van_id']; ?>
+            <?php $reserve_date = (empty($_GET['reserve_date']) ? date('d/m/Y') : $_GET['reserve_date']); ?>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="v_chair" class="col-sm-2 control-label">ระยะทางรวม</label>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input type="hidden" name="page" value="van_choose_detail" />
+                                    <input type="hidden" name="van_id" value="<?= $_GET['van_id'] ?>" />
+                                    <input type="hidden" name="go_start" value="<?= $_GET['go_start'] ?>" />
+                                    <input type="hidden" name="go_start_place" value="<?= $_GET['go_start_place'] ?>" />
+                                    <input type="hidden" name="go_end" value="<?= $_GET['go_end'] ?>" />
+                                    <input type="hidden" name="go_end_place" value="<?= $_GET['go_end_place'] ?>" />                                    
+                                    <input type="text" class="form-control" name="reserve_date" id="reserve_date" value="<?= $reserve_date ?>"/>
+                                    <span class="input-group-btn" for="date-fld">
+                                        <button type="submit" class="btn btn-primary"> ค้นหาเที่ยวรถ</button>
+                                    </span>
+                                </div> 
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-sm-4">
@@ -24,6 +48,9 @@
                         $stmt = $pdo->conn->prepare($sql);
                         $stmt->execute(array(':v_id' => $van_id));
                         $result = $stmt->fetch(PDO::FETCH_OBJ);
+
+
+                        $price_kilomate = $pdo->getPriceInKilomate();
                         ?>
                         <table class="table table-striped table-bordered">
                             <thead>
@@ -48,32 +75,36 @@
                                 <tr>
                                     <td colspan="2">เลือกจุดขึ้นและลง ตารางด้านล่างนี้<i class="glyphicon glyphicon-arrow-down"></i></td>
                                 </tr>
+                                <?php
+                                $sql = 'SELECT vp.vp_id,vp.vp_kilomate,pvp.pvp_name,vp.vp_hierarchy,';
+                                $sql .= ' (SELECT vs_value FROM van_setting) as price';
+                                $sql .= ' FROM van_place vp ';
+                                $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
+                                $sql .= ' WHERE vp.v_id =:van_id';
+                                $sql .= ' ORDER BY vp.vp_hierarchy ASC';
+                                $stmt = $pdo->conn->prepare($sql);
+                                //echo '<pre> sql ::=='.$sql.'</pre>';
+                                $stmt->execute(array(':van_id' => $van_id));
+                                $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+                                ?>
                                 <tr>
-                                    <td colspan="2">
-                                        <ul class="list-group" id="areaPlace">
-                                            <?php
-                                            $sql = 'SELECT vp.vp_id,vp.vp_kilomate,pvp.pvp_name';
-                                            $sql .= ' ,(SELECT vs_value FROM van_setting) as price';
-                                            $sql .= ' FROM van_place vp ';
-                                            $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
-                                            $sql .= ' WHERE vp.v_id =:van_id';
-                                            $stmt = $pdo->conn->prepare($sql);
-                                            //echo '<pre> sql ::=='.$sql.'</pre>';
-                                            $stmt->execute(array(':van_id' => $van_id));
-                                            $results = $stmt->fetchAll(PDO::FETCH_OBJ);
-                                            foreach ($results as $index => $place) {
-                                                ?>
-                                                <li class="list-group-item">
-                                                    <label class="btn btn-info btn-block">
-                                                        <input type="checkbox" id="<?= $place->vp_id ?>" 
-                                                               name="<?= ($place->price * $place->vp_kilomate) ?>" 
-                                                               alt="<?= $place->pvp_name ?>"
-                                                               onclick="addPlaceCart(this)"/>
-                                                        <?= $place->pvp_name ?><span class="badge alert-danger"><?= ($index + 1) ?></span>
-                                                    </label>                                
-                                                </li>
+                                    <td>จุดขึ้นรถ</td>
+                                    <td>                                        
+                                        <select class="form-control" name="place_begin" id="place_begin" onchange="findPlace(this, '<?= PLACE_BEGIN ?>')">
+                                            <?php foreach ($results as $index => $place) { ?>
+                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" itemprop="<?= $place->vp_kilomate ?>" label="<?= $place->vp_hierarchy ?>"><?= $place->pvp_name ?></option>
                                             <?php } ?>
-                                        </ul>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>จุดลงรถ</td>
+                                    <td>
+                                        <select class="form-control" name="place_end" id="place_end" onchange="findPlace(this, '<?= PLACE_END ?>')">
+                                            <?php foreach ($results as $index => $place) { ?>
+                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" itemprop="<?= $place->vp_kilomate ?>" label="<?= $place->vp_hierarchy ?>"><?= $place->pvp_name ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </td>
                                 </tr>
                             </tbody>
@@ -88,7 +119,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-12">
-                        <button type="button" class="btn btn-primary btn-block btn-lg" onclick="confirmReserveVan()" id="btnReserveVan" disabled>
+                        <button type="button" class="btn btn-primary btn-block btn-lg" onclick="confirmReserveVan()" id="btnReserveVan">
                             <i class="glyphicon glyphicon-gift"></i> จองรถ
                         </button>
                     </div>
@@ -106,16 +137,34 @@
     var arrayPlaceLabel = [];
     var arrayChairLabel = [];
     var parentChair = $('#areaChair');
+    var objectPlace = {};
     $(document).ready(function () {
         var van_id = '<?= $van_id ?>';
         setLoadVanChair(van_id);
+        loadDatePicker();
     });
+    function loadDatePicker() {
+        //http://www.daterangepicker.com/#ex5
+        var datepicker = $('#reserve_date');
+        datepicker.prop('readOnly', true);
+        datepicker.daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            format: 'DD/MM/YYYY',
+            locale: DATEPICKER_LOCAL,
+        },
+                function (start, end, label) {
+                    var years = moment().diff(start, 'years');
+                    //alert("You are " + years + " years old.");
+                });
+    }
     function setLoadVanChair(van_id) {
         var arrayChairs = [];
         var arrayPlace = [];
         // Load Chairs
         $.get('../actionDb/van_chair.php?action=getChairsByVanId', {
-            id: van_id
+            id: van_id,
+            reserve_date: '<?= $reserve_date ?>'
         }, function (jsonChairs) {
             $.each(jsonChairs, function (index, objectChair) {
                 arrayChairs.push(objectChair);
@@ -128,9 +177,9 @@
                     //console.log('\n indexX ::==' + indexX + ' indexY ::==' + indexY);
                     $.each(arrayChairs, function (index, chair_) {
                         if (chair_.vc_x == indexX && chair_.vc_y == indexY) {
-                            console.log('\n set chair_.v_status::==' + chair_.vc_cusid);
+                            //console.log('\n set chair_.v_status::==' + chair_.vc_cusid);
                             var element = '';
-                            if (chair_.vc_cusid === '') {
+                            if (chair_.rs_status === null) {
                                 element += '<label class="btn btn-primary btn-largn">';
                                 element += '<input type="checkbox" name="' + chair_.vc_label + '" value="' + chair_.vc_id + '" onClick="addChairInCart()"> ' + chair_.vc_label;
                                 element += '</label>';
@@ -177,33 +226,72 @@
     }
     function getPlaces() {
         totalPrice = 0;
-        arrayPlaceLabel = [];
-        arrayPlaceChoose = [];
-        var place_choose = $('#areaPlace').find('input[type=checkbox]:checked');
-        $.each(place_choose, function (index, checkbox) {
-            var checkbox = $(checkbox);
-            var objectPlace = {};
-            objectPlace.vp_id = checkbox.attr('id'); // van_place
-            var price = checkbox.attr('name'); // van_price
-            totalPrice = price;
-            objectPlace.price = price;
-            objectPlace.label = checkbox.attr('alt');
-            arrayPlaceLabel.push(objectPlace.label);
-
-            console.log('place ::==' + print_properties_in_object(objectPlace));
-            arrayPlaceChoose.push(objectPlace);
-        });
-        return arrayPlaceChoose;
+        var placeDiffKilomate = 0;
+        var priceKilomate = <?= $price_kilomate ?>;
+        var objectPlace = {};
+        var place_begin = $('#place_begin').find(":selected");
+        var place_default_begin = $('#place_begin').find('option').eq('0');
+        var place_end = $('#place_end').find(":selected");
+        var place_default_end = $('#place_end').find('option').last();
+        objectPlace.place_begin_id = place_begin.val();
+        objectPlace.place_begin_price = place_begin.attr('class');
+        objectPlace.place_begin_label = place_begin.text();
+        objectPlace.place_begin_kilomate = place_begin.attr('itemprop');
+        objectPlace.place_end_id = place_end.val();
+        objectPlace.place_end_price = place_end.attr('class');
+        objectPlace.place_end_label = place_end.text();
+        objectPlace.place_end_kilomate = place_end.attr('itemprop');
+        objectPlace.place_default_begin = place_default_begin.text();
+        objectPlace.place_default_end = place_default_end.text();
+        /*
+         *  cal price 
+         */
+//        if (objectPlace.place_begin_id > objectPlace.place_end_id) { // แสดงว่า กลับลังลัง รถสายนั่งกลับมา
+//            
+//        } else {
+//            //objectPlace.place_begin_id  objectPlace.place_end_id
+//        }
+        placeDiffKilomate = objectPlace.place_end_kilomate - objectPlace.place_begin_kilomate;
+        totalPrice = parseNegativeIntToPositiveInt(placeDiffKilomate) * priceKilomate;
+        /*
+         *  end cal price
+         */
+        console.log('placeDiffKilomate ::==' + parseNegativeIntToPositiveInt(placeDiffKilomate));
+        console.log('print_properties_in_object ::==' + print_properties_in_object(objectPlace));
+        return objectPlace;
+    }
+    function checkRoadInUserChoose(objectPlace) {
+        if (objectPlace.place_begin_id < objectPlace.place_end_id) {
+            return false;
+        } else {
+            return true;
+        }
     }
     function confirmReserveVan() {
         var arrayChair = getChairs();
-        if (arrayChair.length > 0) {
+        objectPlace = getPlaces();
+        var isChoosePlace = checkRoadInUserChoose(objectPlace);
+        if (arrayChair.length === 0) {
+            alert('กรุณาเลือกที่นั่งบนรถก่อน');
+            return false;
+        } else if (arrayChair.length > 0 && objectPlace.place_begin_id === objectPlace.place_end_id) {
+            alert('กรุณาเลือก สถานที่ ขึ้นรถ - ลงรถคนละที่กันด้วย กรุณาตรวจสอบ');
+            return false;
+        }
+//        else if (arrayChair.length > 0 && objectPlace.place_begin_id !== objectPlace.place_end_id
+//                && !isChoosePlace) {
+//            alert('ท่านกำลังเลือกสายการเดินทางที่ผิดรูปแบบ \n\
+//                \n สายการเดินทางนี้คือการเดินทาง \n\
+//                \n จาก ' + objectPlace.place_default_begin + ' \n\
+//                เพื่อไป ' + objectPlace.place_default_end + '\n กรุณาตรวจสอบการเลือกเส้นทางอีกครั้ง');
+//            return false;
+//        } 
+        else if (arrayChair.length > 0 && objectPlace.place_begin_id !== objectPlace.place_end_id) { //&& isChoosePlace
             $('#dialog_reserve_van').modal('show');
-            $('#road').html('<h3><label class="label label-info">' + arrayPlaceLabel.toString() + '</label></h3>');
+            $('#road_begin').html('<h3><label class="label label-info">' + objectPlace.place_begin_label + '</label></h3>');
+            $('#road_end').html('<h3><label class="label label-info">' + objectPlace.place_end_label + '</label></h3>');
             $('#chair').html('<h3><label class="label label-success">' + arrayChairLabel.toString() + '</label></h3>');
             $('#price').html('<h3><label class="label label-primary">' + (totalPrice * arrayChairLabel.length) + '</label></h3>');
-        } else {
-            alert('กรุณาเลือกที่นั่งบนรถก่อน');
         }
     }
     function saveReserveChairVan() {
@@ -211,9 +299,11 @@
         if (isConf) {
             $.post('../actionDb/reserve.php?action=create', {
                 'jsonListChairs': arrayObjectToJsonString(arrayChairsChoose),
-                'jsonListPlaces': arrayObjectToJsonString(arrayPlaceChoose),
+                //'jsonListPlaces': arrayObjectToJsonString(arrayPlaceChoose),
+                'jsonObjectPlace': arrayObjectToJsonString(objectPlace),
                 'van_id': '<?= $result->v_id ?>',
                 'price': totalPrice,
+                'reserve_date' : $('#reserve_date').val(),
             }, function (jsonReturn) {
                 if (jsonReturn.status) {
                     alert(jsonReturn.message);
@@ -221,6 +311,32 @@
                 }
             }, 'json');
             return false;
+        }
+    }
+    function findPlace(eleHierarchy, place_type) {
+        var hierarchy = $(eleHierarchy).find('option').filter(":selected").attr('label');
+        console.log('hierarchy ::==' + hierarchy);
+        if (hierarchy != '') {
+            $.get('../actionDb/van_place.php?action=getPlacesByHierarchy', {
+                'van_id': <?= $_GET['van_id'] ?>,
+                'place_type': place_type,
+                'hierarchy': hierarchy,
+            }, function (jsonPlace) {
+                var eleCombo;
+                if (place_type === '<?= PLACE_BEGIN ?>') {
+                    eleCombo = $('#place_end');
+                } else if (place_type === '<?= PLACE_END ?>') {
+                    eleCombo = $('#place_begin');
+                }
+                eleCombo.empty();
+                $.each(jsonPlace, function (index, place) {
+                    eleCombo.append('<option value="' + place.vp_id + '" class="' + place.price + '" itemprop="' + place.vp_kilomate + '" label="' + place.vp_hierarchy + '">' + place.pvp_name + '</option>');
+                });
+                var optionLength = eleCombo.find('option').length;
+                if (optionLength === 0) {
+                    alert('ท่านเลือกสถานที่ไม่ถูกต้อง กรุณาตรวจสอบ');
+                }
+            }, 'json');
         }
     }
 </script>
