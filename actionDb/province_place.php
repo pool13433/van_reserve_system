@@ -58,45 +58,6 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
-    case 'changHierarchy':
-        $id = '';
-        try {
-            $pdo->conn = $pdo->open();
-            $sql = 'SELECT * FROM province_place WHERE pvp =:id ';
-            $stmt = $pdo->conn->prepare($sql);
-            $stmt->execute(array(
-                ':id' => intval($_GET['id']),
-            ));
-            $result = $stmt->fetch(PDO::FETCH_OBJ);
-
-
-
-            /*
-             * Update province_place
-             */
-//            $sql = 'UPDATE  province_place SET ';
-//            $sql .= ' pvp_hierarchy =:hierarchy';
-//            $sql .= ' WHERE pv_id =:id';
-//            $stmt = $pdo->conn->prepare($sql);
-//            $exe = $stmt->execute(array(
-//                ':hierarchy' => $_POST['id'],
-//                ':id' => 
-//            ));
-            /*
-             * Update province_place
-             */
-
-            if (true) {
-                echo $pdo->returnJson(true, 'ลบข้อมูล', 'ลบสำเร็จ', './index.php?page=list-province_place');
-            } else {
-                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ลบ ไม่สำเร็จ [ ' . $sql . ' ]', '');
-            }
-        } catch (Exception $e) {
-            print "Error!: " . $e->getMessage() . "<br/>";
-            die();
-        }
-        $pdo->close();
-        break;
     case 'getProvincePlaceByProvinceId':
         $province_id = $_GET['province_id'];
         try {
@@ -118,11 +79,3 @@ switch ($_GET['action']) {
         break;
 }
 
-function getPersonById($id) {
-    $pdo = new PDOMysql();
-    $pdo->conn = $pdo->open();
-    $stmt = $pdo->conn->prepare('SELECT * FROM person WHERE id =:id');
-    $stmt->execute(array(':id' => $_GET['id']));
-    $result = $stmt->fetch(PDO::FETCH_OBJ);
-    return $result;
-}
