@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2015 at 07:18 PM
+-- Generation Time: Jun 27, 2015 at 04:41 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.5.19
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `c_mobile` varchar(10) NOT NULL,
   `c_updatedate` date NOT NULL,
   `c_updateby` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `company`
@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `company` (
 
 INSERT INTO `company` (`c_id`, `c_name`, `c_onwer`, `c_address`, `c_mobile`, `c_updatedate`, `c_updateby`) VALUES
 (1, 'สายเดินรถเจ้เกียว', 'เจ้เกียว', 'ดอนเมือง', '0800000000', '2015-06-09', 1),
-(2, 'สมบัติ ทัวร์', 'สมบัติ', 'ลาดพร้าว', '0801111111', '2015-06-07', 1);
+(2, 'สมบัติ ทัวร์', 'สมบัติ', 'ลาดพร้าว', '0801111111', '2015-06-07', 1),
+(3, 'สายเดินรถ เจ้เล้ง', 'สายเดินรถ เจ้เล้ง', 'ดอนดมือง', 'สายเดินรถ ', '2015-06-18', 1);
 
 -- --------------------------------------------------------
 
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `updatedate` date NOT NULL COMMENT 'วันที่สร้าง',
   `updateby` int(11) NOT NULL,
   `status` int(11) NOT NULL COMMENT 'สถานะ EMPLOYEE_ID=>1,ONWER_ID=>2,CUSTOMER_ID=>3 ,DRIVER_ID => 4,GENARAL_ID => 0,'
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `person`
@@ -81,7 +82,8 @@ INSERT INTO `person` (`id`, `fb_id`, `code`, `fname`, `lname`, `username`, `pass
 (10, '', 'DRI560004', 'sommai', 'sommai', 'sommai', 'sommai', '1234567812345', '0878356866', 'sommai@gmail.com', '2015-06-07', 1, 0),
 (11, '', 'DRI560006', 'suprecha', 'suprecha', 'suprecha', 'suprecha', 'suprecha', '0800000000', 'suprecha@gmail.com', '2015-06-07', 1, 4),
 (12, '', 'DRI560005', 'areeee', 'areeee', 'areeee', 'areeee', 'areeee', '0800000000', 'areeee@gmail.com', '2015-06-07', 1, 4),
-(13, '', 'CUS580003', 'thailand', 'thailand', 'thailand', '1234', 'thailand', 'thailand', 'thailand', '2015-06-11', 1, 3);
+(13, '', 'CUS580003', 'thailand', 'thailand', 'thailand', '1234', 'thailand', 'thailand', 'thailand', '2015-06-11', 1, 3),
+(14, '', 'EMP580002', 'ADminstrtor', 'ADminstrtor', 'ADminstrtor', '1234', '000000000000', '0800000000', 'ADminstrtor@gmail.com', '2015-06-18', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -191,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `province_place` (
   `pv_id` int(11) NOT NULL COMMENT 'รหัสจังหวัด',
   `pvp_updatedate` date NOT NULL,
   `pvp_updateby` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `province_place`
@@ -205,7 +207,13 @@ INSERT INTO `province_place` (`pvp_id`, `pvp_name`, `pv_id`, `pvp_updatedate`, `
 (7, 'อรัญประเทศ', 18, '2015-06-07', 1),
 (8, 'ดอนเมือง', 1, '2015-06-07', 1),
 (9, 'ฟิวเจอร์ ปาร์ครังสิต', 4, '2015-06-07', 1),
-(10, 'อำเภอเมือง', 17, '2015-06-07', 1);
+(10, 'อำเภอเมือง', 17, '2015-06-07', 1),
+(11, 'วัฒนานคร', 18, '2015-06-13', 1),
+(12, 'ฟาร์มช้าง', 5, '2015-06-13', 1),
+(13, 'เกาะเสม็ค', 12, '2015-06-13', 1),
+(14, 'ลือเสาะ', 75, '2015-06-14', 1),
+(15, 'แหลมแม่พิมพ์', 12, '2015-06-18', 1),
+(16, 'ดอยอินทนน', 38, '2015-06-18', 1);
 
 -- --------------------------------------------------------
 
@@ -218,26 +226,75 @@ CREATE TABLE IF NOT EXISTS `reserve` (
   `cus_id` int(11) NOT NULL COMMENT 'รหัสลูกค้า',
   `v_id` int(11) NOT NULL COMMENT 'รหัสรถตู้ที่จอง',
   `rs_price` int(11) NOT NULL COMMENT 'ราคาต้องชำระ',
+  `rs_usabledate` date NOT NULL COMMENT 'วันที่ใช้งาน',
   `vp_idstart` int(11) NOT NULL COMMENT 'สถานที่ขึ้้น',
   `vp_idend` int(11) NOT NULL COMMENT 'สสถานที่ลง',
   `rs_createdate` datetime NOT NULL,
   `rs_updateby` int(11) NOT NULL,
   `rs_status` int(2) NOT NULL COMMENT 'สถานะการจอง  ''0'' => ''จองเรียบร้อย'',         ''1'' => ''จ่ายเงินเรียบร้อย'',         ''2'' => ''ยกเลิกการจอง'',         ''3'' => ''เกินระยะเวลาการชำระเงิน'''
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='ตารางเก็บข้อมูลการจอง';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='ตารางเก็บข้อมูลการจอง';
 
 --
 -- Dumping data for table `reserve`
 --
 
-INSERT INTO `reserve` (`rs_id`, `cus_id`, `v_id`, `rs_price`, `vp_idstart`, `vp_idend`, `rs_createdate`, `rs_updateby`, `rs_status`) VALUES
-(3, 13, 31, 0, 109, 112, '2015-06-12 22:55:02', 1, 0),
-(4, 13, 33, 200, 93, 94, '2015-06-12 22:55:58', 1, 0),
-(5, 13, 33, 200, 93, 94, '2015-06-12 23:13:02', 1, 0),
-(6, 13, 33, 200, 93, 94, '2015-06-12 23:19:13', 1, 0),
-(7, 13, 33, 200, 93, 94, '2015-06-12 23:19:39', 1, 0),
-(8, 13, 31, 0, 109, 112, '2015-06-12 23:28:41', 1, 0),
-(9, 13, 31, 0, 109, 112, '2015-06-12 23:55:31', 1, 0),
-(10, 13, 36, 0, 69, 73, '2015-06-12 23:56:03', 1, 0);
+INSERT INTO `reserve` (`rs_id`, `cus_id`, `v_id`, `rs_price`, `rs_usabledate`, `vp_idstart`, `vp_idend`, `rs_createdate`, `rs_updateby`, `rs_status`) VALUES
+(2, 13, 39, 600, '2015-06-18', 10, 12, '2015-06-16 00:09:22', 1, 0),
+(3, 13, 41, 500, '2015-06-17', 37, 39, '2015-06-18 21:53:47', 1, 0),
+(4, 13, 41, 500, '2015-06-15', 37, 39, '2015-06-18 22:36:32', 1, 0),
+(5, 13, 41, 500, '2015-06-16', 37, 39, '2015-06-18 22:43:39', 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reserve_chair`
+--
+
+CREATE TABLE IF NOT EXISTS `reserve_chair` (
+`rsc_id` int(11) NOT NULL,
+  `vc_id` int(11) NOT NULL COMMENT 'รหัสที่นั่ง',
+  `rs_id` int(11) NOT NULL COMMENT 'รหัสจอง',
+  `rsc_usabledate` date NOT NULL COMMENT 'วันที่ใช้งาน'
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `reserve_chair`
+--
+
+INSERT INTO `reserve_chair` (`rsc_id`, `vc_id`, `rs_id`, `rsc_usabledate`) VALUES
+(1, 7, 2, '2015-06-18'),
+(2, 10, 2, '2015-06-18'),
+(3, 13, 2, '2015-06-18'),
+(4, 16, 2, '2015-06-18'),
+(5, 75, 3, '2015-06-17'),
+(6, 76, 3, '2015-06-17'),
+(7, 78, 3, '2015-06-17'),
+(8, 81, 3, '2015-06-17'),
+(9, 84, 3, '2015-06-17'),
+(10, 88, 3, '2015-06-17'),
+(11, 77, 4, '2015-06-15'),
+(12, 79, 4, '2015-06-15'),
+(13, 80, 4, '2015-06-15'),
+(14, 83, 4, '2015-06-15'),
+(15, 85, 4, '2015-06-15'),
+(16, 86, 4, '2015-06-15'),
+(17, 87, 4, '2015-06-15'),
+(18, 89, 4, '2015-06-15'),
+(19, 75, 5, '2015-06-16'),
+(20, 76, 5, '2015-06-16'),
+(21, 77, 5, '2015-06-16'),
+(22, 78, 5, '2015-06-16'),
+(23, 79, 5, '2015-06-16'),
+(24, 80, 5, '2015-06-16'),
+(25, 81, 5, '2015-06-16'),
+(26, 82, 5, '2015-06-16'),
+(27, 83, 5, '2015-06-16'),
+(28, 84, 5, '2015-06-16'),
+(29, 85, 5, '2015-06-16'),
+(30, 86, 5, '2015-06-16'),
+(31, 87, 5, '2015-06-16'),
+(32, 88, 5, '2015-06-16'),
+(33, 89, 5, '2015-06-16');
 
 -- --------------------------------------------------------
 
@@ -257,18 +314,16 @@ CREATE TABLE IF NOT EXISTS `van` (
   `v_driveend` time NOT NULL,
   `v_updatedate` date NOT NULL,
   `v_updateby` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `van`
 --
 
 INSERT INTO `van` (`v_id`, `v_name`, `v_detail`, `v_company`, `v_driver`, `v_chair`, `v_roadlength`, `v_drivestart`, `v_driveend`, `v_updatedate`, `v_updateby`) VALUES
-(31, 'ระยอง - เชียงใหม่', 'ระยอง - เชียงใหม่', 1, 6, 15, 1000, '00:00:00', '00:00:00', '2015-06-11', 1),
-(32, 'ยะลา - ระยอง', 'ยะลา - ระยอง', 1, 6, 5, 250, '11:22:00', '11:22:00', '2015-06-11', 1),
-(33, 'กรุงเทพ - ยะลา', 'กรุงเทพ - ยะลา', 1, 6, 3, 300, '11:22:00', '22:11:00', '2015-06-11', 1),
-(34, 'ระยอง - กรุงเทพ', 'ระยอง - กรุงเทพ รถบัส', 1, 6, 32, 1000, '22:22:00', '11:11:00', '2015-06-11', 1),
-(36, 'รถเมย์รถเมย์รถเมย์', 'รถเมย์รถเมย์รถเมย์', 1, 6, 15, 0, '22:22:00', '22:22:00', '2015-06-10', 1);
+(39, 'กรุงเทพ - สระแก้ว', 'กรุงเทพ - สระแก้ว', 1, 6, 2, 11111, '00:00:00', '10:50:00', '2015-06-17', 1),
+(40, 'ระยอง - จันทบุรี', 'จาก ระยอง ไป จันทบุรี', 2, 6, 15, 60, '21:55:00', '12:00:00', '2015-06-17', 1),
+(41, 'จาก กรุงเทพ -ไป เชียงใหม่', 'จาก กรุงเทพ -ไป เชียงใหม่', 3, 12, 15, 100, '12:00:00', '03:15:00', '2015-06-18', 1);
 
 -- --------------------------------------------------------
 
@@ -281,115 +336,46 @@ CREATE TABLE IF NOT EXISTS `van_chair` (
   `vc_x` int(2) NOT NULL,
   `vc_y` int(2) NOT NULL,
   `vc_label` varchar(15) NOT NULL,
-  `v_id` int(11) NOT NULL COMMENT 'รหัสรถตู้',
-  `vc_status` int(1) NOT NULL DEFAULT '0' COMMENT '0 = ว่าง , 1 = ไม่ว่าง',
-  `vc_cusid` varchar(3) NOT NULL COMMENT 'รหัสลูกค้า'
-) ENGINE=InnoDB AUTO_INCREMENT=367 DEFAULT CHARSET=utf8;
+  `v_id` int(11) NOT NULL COMMENT 'รหัสรถตู้'
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `van_chair`
 --
 
-INSERT INTO `van_chair` (`vc_id`, `vc_x`, `vc_y`, `vc_label`, `v_id`, `vc_status`, `vc_cusid`) VALUES
-(102, 0, 0, 'A2', 26, 1, ''),
-(103, 0, 1, 'A2', 26, 0, ''),
-(104, 0, 0, 'A1', 27, 1, ''),
-(105, 0, 1, 'A2', 27, 0, ''),
-(106, 0, 0, 'A1', 28, 0, ''),
-(107, 0, 1, 'A2', 28, 0, ''),
-(108, 1, 0, 'B1', 29, 0, ''),
-(109, 1, 1, 'B2', 29, 1, ''),
-(110, 2, 0, 'C1', 29, 0, ''),
-(111, 3, 0, 'D1', 29, 0, ''),
-(112, 0, 0, 'A1', 30, 1, ''),
-(113, 1, 0, 'A2', 30, 0, ''),
-(114, 0, 1, 'B1', 30, 0, ''),
-(115, 1, 1, 'B2', 30, 1, ''),
-(125, 2, 0, '1', 35, 0, ''),
-(126, 3, 0, '2', 35, 0, ''),
-(127, 1, 1, '3', 35, 1, ''),
-(128, 3, 1, '4', 35, 1, ''),
-(129, 4, 1, '5', 35, 0, ''),
-(130, 1, 2, '6', 35, 0, ''),
-(131, 3, 2, '7', 35, 1, ''),
-(132, 4, 2, '8', 35, 0, ''),
-(133, 1, 3, '9', 35, 0, ''),
-(134, 3, 3, '10', 35, 1, ''),
-(135, 4, 3, '11', 35, 1, ''),
-(136, 1, 4, '12', 35, 0, ''),
-(137, 2, 4, '13', 35, 0, ''),
-(138, 3, 4, '14', 35, 0, ''),
-(139, 4, 4, '15', 35, 0, ''),
-(203, 2, 0, 'A1', 36, 0, '13'),
-(204, 3, 0, 'A2', 36, 0, '13'),
-(205, 1, 1, 'B1', 36, 0, ''),
-(206, 3, 1, 'B2', 36, 0, '13'),
-(207, 4, 1, 'B3', 36, 0, '13'),
-(208, 1, 2, 'C1', 36, 0, ''),
-(209, 3, 2, 'C2', 36, 0, ''),
-(210, 4, 2, 'C3', 36, 0, '13'),
-(211, 1, 3, 'D1', 36, 0, ''),
-(212, 3, 3, 'D2', 36, 0, ''),
-(213, 4, 3, 'D3', 36, 0, ''),
-(214, 1, 4, 'E1', 36, 0, ''),
-(215, 2, 4, 'E2', 36, 0, ''),
-(216, 3, 4, 'E3', 36, 0, ''),
-(217, 4, 4, 'E4', 36, 0, ''),
-(267, 0, 0, 'A1', 32, 0, ''),
-(268, 1, 0, 'A', 32, 0, ''),
-(269, 2, 0, 'S', 32, 0, ''),
-(270, 3, 0, 'D', 32, 0, ''),
-(271, 0, 1, 'A2', 32, 0, ''),
-(272, 0, 0, 'A', 33, 0, '13'),
-(273, 1, 0, 'A2', 33, 0, '13'),
-(274, 2, 0, 'A1', 33, 0, '13'),
-(290, 0, 1, 'A1', 34, 0, ''),
-(291, 1, 1, 'A1', 34, 0, ''),
-(292, 3, 1, 'A1', 34, 0, ''),
-(293, 4, 1, 'A1', 34, 0, ''),
-(294, 0, 2, 'B1', 34, 0, ''),
-(295, 1, 2, 'B1', 34, 0, ''),
-(296, 3, 2, 'B1', 34, 0, ''),
-(297, 4, 2, 'B1', 34, 0, ''),
-(298, 0, 3, 'C1', 34, 0, ''),
-(299, 1, 3, 'C1', 34, 0, ''),
-(300, 3, 3, 'C1', 34, 0, ''),
-(301, 4, 3, 'C1', 34, 0, ''),
-(302, 0, 4, 'D1', 34, 0, ''),
-(303, 1, 4, 'D1', 34, 0, ''),
-(304, 3, 4, 'D1', 34, 0, ''),
-(305, 4, 4, 'D1', 34, 0, ''),
-(306, 0, 5, 'E1', 34, 0, ''),
-(307, 1, 5, 'E1', 34, 0, ''),
-(308, 3, 5, 'E1', 34, 0, ''),
-(309, 4, 5, 'E1', 34, 0, ''),
-(310, 0, 6, 'F1', 34, 0, ''),
-(311, 1, 6, 'F1', 34, 0, ''),
-(312, 3, 6, 'F1', 34, 0, ''),
-(313, 4, 6, 'F1', 34, 0, ''),
-(314, 0, 7, 'G1', 34, 0, ''),
-(315, 1, 7, 'G1', 34, 0, ''),
-(316, 3, 7, 'G1', 34, 0, ''),
-(317, 4, 7, 'G1', 34, 0, ''),
-(318, 0, 8, 'H1', 34, 0, ''),
-(319, 1, 8, 'H1', 34, 0, ''),
-(320, 3, 8, 'H1', 34, 0, ''),
-(321, 4, 8, 'H1', 34, 0, ''),
-(352, 2, 0, 'A1', 31, 0, '13'),
-(353, 3, 0, 'A2', 31, 0, '13'),
-(354, 1, 1, 'B1', 31, 0, ''),
-(355, 3, 1, 'B2', 31, 0, '13'),
-(356, 4, 1, 'B3', 31, 0, ''),
-(357, 1, 2, 'C1', 31, 0, '13'),
-(358, 3, 2, 'C2', 31, 0, '13'),
-(359, 4, 2, 'C3', 31, 0, ''),
-(360, 1, 3, 'D1', 31, 0, '13'),
-(361, 3, 3, 'D2', 31, 0, '13'),
-(362, 4, 3, 'D3', 31, 0, ''),
-(363, 1, 4, 'E1', 31, 0, ''),
-(364, 2, 4, 'E2', 31, 0, ''),
-(365, 3, 4, 'E3', 31, 0, '13'),
-(366, 4, 4, 'E4', 31, 0, '');
+INSERT INTO `van_chair` (`vc_id`, `vc_x`, `vc_y`, `vc_label`, `v_id`) VALUES
+(29, 3, 0, 'A', 39),
+(30, 3, 1, 'B', 39),
+(60, 2, 0, 'A1', 40),
+(61, 3, 0, 'A2', 40),
+(62, 1, 1, 'B1', 40),
+(63, 3, 1, 'B2', 40),
+(64, 4, 1, 'B3', 40),
+(65, 1, 2, 'C1', 40),
+(66, 3, 2, 'C2', 40),
+(67, 4, 2, 'C3', 40),
+(68, 1, 3, 'D1', 40),
+(69, 3, 3, 'D2', 40),
+(70, 4, 3, 'D3', 40),
+(71, 1, 4, 'E1', 40),
+(72, 2, 4, 'E2', 40),
+(73, 3, 4, 'E3', 40),
+(74, 4, 4, 'E4', 40),
+(75, 2, 0, 'A1', 41),
+(76, 3, 0, 'A2', 41),
+(77, 1, 1, 'B1', 41),
+(78, 3, 1, 'B2', 41),
+(79, 4, 1, 'B3', 41),
+(80, 1, 2, 'D1', 41),
+(81, 3, 2, 'D2', 41),
+(82, 4, 2, 'D3', 41),
+(83, 1, 3, 'E1', 41),
+(84, 3, 3, 'E2', 41),
+(85, 4, 3, 'E3', 41),
+(86, 1, 4, 'F1', 41),
+(87, 2, 4, 'F2', 41),
+(88, 3, 4, 'F3', 41),
+(89, 4, 4, 'F4', 41);
 
 -- --------------------------------------------------------
 
@@ -405,41 +391,21 @@ CREATE TABLE IF NOT EXISTS `van_place` (
   `v_id` int(11) NOT NULL COMMENT 'รหัสรถตู้',
   `vp_updatedate` date NOT NULL,
   `pvp_updateby` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `van_place`
 --
 
 INSERT INTO `van_place` (`vp_id`, `vp_hierarchy`, `vp_kilomate`, `pvp_id`, `v_id`, `vp_updatedate`, `pvp_updateby`) VALUES
-(18, 1, 0, 8, 26, '2015-06-09', 1),
-(19, 2, 0, 6, 26, '2015-06-09', 1),
-(20, 1, 0, 8, 27, '2015-06-09', 1),
-(21, 2, 0, 6, 27, '2015-06-09', 1),
-(22, 1, 0, 2, 28, '2015-06-09', 1),
-(23, 2, 0, 3, 28, '2015-06-09', 1),
-(24, 1, 0, 10, 29, '2015-06-09', 1),
-(25, 2, 0, 9, 29, '2015-06-09', 1),
-(26, 1, 0, 10, 30, '2015-06-09', 1),
-(27, 2, 0, 9, 30, '2015-06-09', 1),
-(36, 1, 0, 8, 35, '2015-06-09', 1),
-(37, 2, 0, 6, 35, '2015-06-09', 1),
-(69, 1, 0, 8, 36, '2015-06-10', 1),
-(70, 2, 0, 6, 36, '2015-06-10', 1),
-(71, 3, 0, 5, 36, '2015-06-10', 1),
-(72, 4, 0, 10, 36, '2015-06-10', 1),
-(73, 5, 0, 9, 36, '2015-06-10', 1),
-(74, 6, 0, 7, 36, '2015-06-10', 1),
-(91, 1, 0, 2, 32, '2015-06-11', 1),
-(92, 2, 0, 3, 32, '2015-06-11', 1),
-(93, 1, 40, 8, 33, '2015-06-11', 1),
-(94, 2, 100, 6, 33, '2015-06-11', 1),
-(99, 1, 0, 2, 34, '2015-06-11', 1),
-(100, 2, 0, 3, 34, '2015-06-11', 1),
-(109, 1, 0, 3, 31, '2015-06-11', 1),
-(110, 2, 0, 8, 31, '2015-06-11', 1),
-(111, 3, 0, 5, 31, '2015-06-11', 1),
-(112, 4, 0, 10, 31, '2015-06-11', 1);
+(28, 1, 0, 7, 39, '2015-06-17', 1),
+(29, 2, 0, 8, 39, '2015-06-17', 1),
+(30, 3, 0, 2, 39, '2015-06-17', 1),
+(35, 1, 0, 13, 40, '2015-06-17', 1),
+(36, 2, 60, 3, 40, '2015-06-17', 1),
+(37, 1, 0, 8, 41, '2015-06-18', 1),
+(38, 2, 150, 6, 41, '2015-06-18', 1),
+(39, 3, 250, 16, 41, '2015-06-18', 1);
 
 -- --------------------------------------------------------
 
@@ -498,6 +464,12 @@ ALTER TABLE `reserve`
  ADD PRIMARY KEY (`rs_id`);
 
 --
+-- Indexes for table `reserve_chair`
+--
+ALTER TABLE `reserve_chair`
+ ADD PRIMARY KEY (`rsc_id`);
+
+--
 -- Indexes for table `van`
 --
 ALTER TABLE `van`
@@ -529,12 +501,12 @@ ALTER TABLE `van_setting`
 -- AUTO_INCREMENT for table `company`
 --
 ALTER TABLE `company`
-MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `person`
 --
 ALTER TABLE `person`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัส',AUTO_INCREMENT=14;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัส',AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `province`
 --
@@ -544,27 +516,32 @@ MODIFY `pv_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=80;
 -- AUTO_INCREMENT for table `province_place`
 --
 ALTER TABLE `province_place`
-MODIFY `pvp_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `pvp_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `reserve`
 --
 ALTER TABLE `reserve`
-MODIFY `rs_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `rs_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `reserve_chair`
+--
+ALTER TABLE `reserve_chair`
+MODIFY `rsc_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=34;
 --
 -- AUTO_INCREMENT for table `van`
 --
 ALTER TABLE `van`
-MODIFY `v_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสรถตู้',AUTO_INCREMENT=37;
+MODIFY `v_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสรถตู้',AUTO_INCREMENT=42;
 --
 -- AUTO_INCREMENT for table `van_chair`
 --
 ALTER TABLE `van_chair`
-MODIFY `vc_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=367;
+MODIFY `vc_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=90;
 --
 -- AUTO_INCREMENT for table `van_place`
 --
 ALTER TABLE `van_place`
-MODIFY `vp_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=113;
+MODIFY `vp_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=40;
 --
 -- AUTO_INCREMENT for table `van_setting`
 --

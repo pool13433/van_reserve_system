@@ -42,7 +42,6 @@ if (!empty($_GET['id'])) {
     $v_updateby = $result->v_updateby;
 }
 ?>
-
 <form class="form-horizontal" id="form_province_place"
       data-bv-message="This value is not valid"
       data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
@@ -177,18 +176,6 @@ if (!empty($_GET['id'])) {
                     <?php require './map_van_chair.php'; ?>
                 </div>
                 <div class="form-group">
-                    <label for="v_chair" class="col-sm-2 control-label">วันที่จะเดินทาง</label>
-                    <div class="col-sm-3 input-prepend input-group">
-                        <span class="add-on input-group-addon">
-                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        </span>
-                        <input type="text"  name="reservation" id="daterangepicker" class="form-control" 
-                               id="useable_date"
-                               value="" readonly data-validation="required"                           
-                               data-validation-error-msg="กรุณากรอกข้อมูล" />                          
-                    </div>
-                </div>
-                <div class="form-group">
                     <label for="v_chair" class="col-sm-2 control-label">ระยะทางรวม</label>
                     <div class="col-sm-3">
                         <div class="input-group">
@@ -242,6 +229,7 @@ if (!empty($_GET['id'])) {
     var select2Places;
     var mutiSelect;
     var select2;
+    var countValidInput = 0;
     $(document).ready(function () {
 
         /*
@@ -304,10 +292,13 @@ if (!empty($_GET['id'])) {
             } else {
                 var arrayChair = [];
                 arrayChair = getChair().length;
-                //console.log('arrayChair ::==' + arrayChair);
+                console.log('arrayChair ::==' + arrayChair);
+                console.log('countValidInput ::=='+countValidInput);
                 if (arrayChair === 0) {
                     alert('กรุณาสร้างที่นั่ง ตั้งแต่ 1 ที่นั่งขึ้นไป กรุณาตรวจสอบ');
-                } else {
+                } else if(arrayChair !== countValidInput){
+                    alert('กรุณากรอกชื่อที่นั่งในครบถ้วน');
+                }else {
                     var isConfirm = confirm('ยืนยันการบันทึกการจัดการสายเดินทางรถ ใช่[OK] || ยกเลิก[Cancle]');
                     if (isConfirm) {
                         $.ajax({
@@ -366,6 +357,7 @@ if (!empty($_GET['id'])) {
         return obj;// "{'name' : " + name + ",'places' : " + places + ",'drive':" + drive + ",'company':" + company + ",'chair':" + chair + " }";
     }
     function getChair() {
+        countValidInput = 0;
         var arrayChairs = [];
         var parentChair = $('#areaChair');
         var chidrenChairs = parentChair.find('tr');
@@ -381,34 +373,57 @@ if (!empty($_GET['id'])) {
                 //console.log('is_input ::==' + is_input);
                 if (is_input) {
                     var value = chair.val();
+                    if(value!==''){
+                        countValidInput ++;                                                
+                    }
                     arrayChairs.push({'chair_x': indexX, 'chair_y': indexY, 'value': value});
                 }
-            });
-//            $.each(chairs, function (indexX, chair) {
-//                var value = $(chair).val();                
-//                console.log('value ' + indexX + ' ::==' + value);
-//                arrayChairs.push({'chair_x': indexX, 'chair_y': indexY, 'value': value});
-//            });
-//                var input1= $(object).find('input').eq('0').val();
-//                var input2= $(object).find('input').eq('1').val();
-//                var input3= $(object).find('input').eq('2').val();
-            //console.log('input1 ::=='+input1+' input2 ::=='+input2+' input3 ::=='+input3);            
+            });         
         });
         //console.log('arrayChairs ::' + print_properties_in_object(arrayChairs[4]));
         return arrayChairs;
     }
     function replaceInput(button) {
-        $(button).replaceWith('<input type="text" class="form-control" name=""/>');
+        //$(button).replaceWith('<input type="text" class="form-control" name=""/>');        
+        $(button).replaceWith(builderInputHtml(''));
         var countInput = $('#areaChair').find('input[type=text]').length;
         $('#v_chair').val(countInput);
+    }
+    function builderInputHtml(value){
+        var object_html = ' <div class="input-group"> ';
+        object_html += ' <input type="text" class="form-control" value="'+value+'">';
+        object_html += ' <div class="input-group-btn">';
+        object_html += '     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">';
+        object_html += '         <span class="caret"></span>';
+        object_html += '         <span class="sr-only">Toggle Dropdown</span>';
+        object_html += '     </button>';
+        object_html += '     <ul class="dropdown-menu pull-right">';
+        object_html += '         <li><a href="javascript:void(0)" onclick="clearInput(this)"><i class="glyphicon glyphicon-refresh"></i> ล้างข้อความ</a></li>';
+        object_html += '         <li class="divider"></li>';
+        object_html += '         <li><a href="javascript:void(0)" onclick="replaceButton(this)"><i class="glyphicon glyphicon-trash"></i> ยกเลิก</a></li>';
+        object_html += '     </ul>';
+        object_html += ' </div>'; //<!-- /btn-group -->
+        object_html += ' </div>';
+        return object_html;
+    }
+    function replaceButton(input){        
+        var obj_button = '<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)">';
+             obj_button += '   <i class="glyphicon glyphicon-plus-sign"></i>';
+             obj_button += '</button>  ';
+         var parent = $(input).closest('.input-group');
+        $(parent).replaceWith(obj_button);
+    }
+    function clearInput(input){
+        var textbox = $(input).closest('.input-group').find('.form-control');
+        $(textbox).val('');
     }
     function reStartInput() {
         $('#v_chair').val(0);
         var chairs = $('#areaChair').find('tr');
         $.each(chairs, function (indexTr, objectTr) {
-            var chairTrs = $(objectTr).find('input[type=text]');
+            var chairTrs = $(objectTr).find('.input-group'); //$(objectTr).find('input[type=text]');
             $.each(chairTrs, function (indexTd, objectTd) {
-                $(objectTd).replaceWith('<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)"><i class="glyphicon glyphicon-plus-sign"></i></button>');
+                $(objectTd).replaceWith('<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)"><i class="glyphicon glyphicon-plus-sign"></i></button>');               
             });
         });
     }
@@ -434,7 +449,8 @@ if (!empty($_GET['id'])) {
                     $.each(arrayChairs, function (index, chair_) {
                         if (chair_.vc_x == indexX && chair_.vc_y == indexY) {
                             console.log('\n set value ');
-                            $(chair).replaceWith('<input type="text" class="form-control" name="" value="' + chair_.vc_label + '"/>');
+                            //$(chair).replaceWith('<input type="text" class="form-control" name="" value="' + chair_.vc_label + '"/>');
+                             $(chair).replaceWith(builderInputHtml(chair_.vc_label));
                         }
                     });
                 });
