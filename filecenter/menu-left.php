@@ -44,7 +44,7 @@ $authen = $_SESSION['person'];
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTow">
                         <span class="glyphicon glyphicon glyphicon-th-large">
-                        </span>เมนูจัดการข้อมูลพื้นฐาน</a>
+                        </span>เมนูจัดการข้อมูลรถตู้</a>
                 </h4>
             </div>
             <div id="collapseTow" class="panel-collapse collapse">
@@ -57,44 +57,29 @@ $authen = $_SESSION['person'];
                         </tr>   
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-province">จัดการจังหวัดของแต่ละสถานที่</a>
+                                <a href="index.php?page=list-province">จัดการจังหวัดเส้นทางการเดินรถ</a>
                             </td>
-                        </tr>                                                 
+                        </tr>        
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <a href="index.php?page=list-province_place">จัดการข้อมูลสถาที่จุดขึ้น-ลงแต่ละจังหวัด</a>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <a href="index.php?page=list-van">จัดการข้อมูลจัดรถตู้</a>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <a href="index.php?page=form-van_place">จัดการระยะทางสถานที่ขึ้น-ลงของรถตู้</a>
+                            </td>
+                        </tr>  
                     </table>
                 </div>
             </div>
-        </div>
+        </div>        
         <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                        <span class="glyphicon glyphicon glyphicon-th">
-                        </span>เมนูตั้งค่าข้อมูลรถตู้</a>
-                </h4>
-            </div>
-            <div id="collapseThree" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <table class="table">
-                        <tr>
-                            <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-province_place">จัดการสถานที่ในแต่ละจังหวัด</a>
-                            </td>
-                        </tr> 
-                        <tr>
-                            <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-van">ฟอร์มจัดรถตู้</a>
-                            </td>
-                        </tr> 
-                        <tr>
-                            <td onclick="setAccordion(this)">
-                                <a href="index.php?page=form-van_place">ฟอร์มจัดการระยะทางของสถานที่</a>
-                            </td>
-                        </tr>                                               
-                    </table>
-                </div>
-            </div>
-        </div>
-    <div class="panel panel-primary">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">

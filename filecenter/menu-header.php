@@ -1,9 +1,9 @@
 <?php
-if (empty($_SESSION)) {
+if (!isset($_SESSION)) {
     session_start();
 }
 require '../actionDb/variableGlobal.php';
-$authen = $_SESSION['person'];
+$authen = (empty($_SESSION['person']) ? '' : $_SESSION['person']);
 ?>
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="navbar-header">
@@ -13,23 +13,23 @@ $authen = $_SESSION['person'];
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">ระบบจองรถตู้ออนไลน์</a>
+        <a class="navbar-brand" href="../home.html">ระบบจองรถตู้ออนไลน์</a>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <?php if($authen->status == CUSTOMER_ID){?>
             <li>
                 <a href="index.php?page=van_search">
                     <i class="glyphicon glyphicon-search"></i> เริ่มค้นหาสายเดินรถ
                 </a>
             </li>
-            <li>
-                <a href="index.php?page=history_reserve">
-                    <i class="glyphicon glyphicon-list-alt"></i> รายการจองรถทั้งหมด
-                </a>
-            </li>
-            <?php }?>
+            <?php if (!empty($_SESSION['person'])) { ?>
+                <li>
+                    <a href="index.php?page=history_reserve">
+                        <i class="glyphicon glyphicon-list-alt"></i> รายการจองรถทั้งหมด
+                    </a>
+                </li>
+            <?php } ?>
             <!--            <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
                             <ul class="dropdown-menu">
@@ -67,17 +67,11 @@ $authen = $_SESSION['person'];
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">เมนูระบบ<strong class="caret"></strong></a>
                 <ul class="dropdown-menu">
-                    <!--                    <li>
-                                            <a href="#">Action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Another action</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Something else here</a>
-                                        </li>
-                                        <li class="divider">
-                                        </li>-->
+                    <li>
+                        <a href="javascript:void(0)">
+                            <i class="glyphicon glyphicon-pencil"></i> แก้ไขข้อมูลส่วนตัว
+                        </a>
+                    </li>
                     <li>
                         <a href="javascript:void(0)" onclick="logout('../actionDb/person.php?action=logout')">
                             <i class="glyphicon glyphicon-log-out"></i> ออกจากระบบ

@@ -1,14 +1,20 @@
 <?php
 require_once '../mysql_con/PDOMysql.php';
 $status = (empty($_GET['status']) ? '' : $_GET['status']);
+$person_title = array(
+    '1' => 'จัดการเจ้าหน้าที่ดูแลระบบ',
+    '2' => '',
+    '3' => 'จัดการลูกค้า',
+    '4' => 'จัดการพนักงานขับรถ',
+);
 ?>
 <div class="panel panel-primary">
     <div class="panel-heading clearfix">
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-            <i class="glyphicon glyphicon-list-alt"></i> รายการแสดงจัดการพนักงานขับรถ
+            <i class="glyphicon glyphicon-list-alt"></i> รายการแสดง<?php echo $person_title[$status] ?>
         </h4>
         <div class="btn-group pull-right">
-            <a href="index.php?page=form-person&status=<?=$status?>" class="btn btn-info">
+            <a href="index.php?page=form-person&status=<?= $status ?>" class="btn btn-info">
                 <i class="glyphicon glyphicon-plus-sign"></i> สร้าง
             </a>
         </div>
@@ -38,7 +44,7 @@ $status = (empty($_GET['status']) ? '' : $_GET['status']);
                         <td><?= $value->fname . '   ' . $value->lname ?></td>
                         <td><?= $value->code ?></td>
                         <td style="width: 8%;">
-                            <a href="index.php?page=form-person&status=<?=$status?>&id=<?= $value->id ?>" class="btn btn-warning">
+                            <a href="index.php?page=form-person&status=<?= $status ?>&id=<?= $value->id ?>" class="btn btn-warning">
                                 <i class="glyphicon glyphicon-pencil"></i>แก้ไข
                             </a>
                         </td>

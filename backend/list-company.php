@@ -38,7 +38,7 @@
                             </a>
                         </td>
                         <td style="width: 8%;">
-                            <button type="button" class="btn btn-danger" onclick="delete_data(<?= $value->c_id ?>, '../actionDb/province.php?action=delete')">
+                            <button type="button" class="btn btn-danger" onclick="delete_data(<?= $value->c_id ?>, '../actionDb/company.php?action=delete')">
                                 <i class="glyphicon glyphicon-trash"></i>ลบ
                             </button>
                         </td>

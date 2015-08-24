@@ -2,7 +2,7 @@
 if (!isset($_SESSION)) {
     session_start();
 }
-$authen = $_SESSION['person'];
+$authen = (empty($_SESSION['person']) ? '' : $_SESSION['person']);
 include '../mysql_con/PDOMysql.php';
 ?>
 <div class="panel panel-primary">

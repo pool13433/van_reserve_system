@@ -7,7 +7,7 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
 <div class="panel panel-primary">
     <div class="panel-heading clearfix">
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-            <i class="glyphicon glyphicon-list-alt"></i> ฟอร์มจัดการค่าบริการรถตู้
+            <i class="glyphicon glyphicon-list-alt"></i> ฟอร์มจัดการระยะทางแต่ละจุดขึ้น-ลง
         </h4>
 <!--        <div class="btn-group pull-right">
             <a href="index.php?page=list-province_place" class="btn btn-info">
@@ -23,7 +23,7 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
                     <div class="input-group">
                         <label class="input-group-btn" for="date-fld">
                             <span class="btn btn-default">
-                                บริษัทเดินรถ
+                                สายรถตู้
                             </span>
                         </label>
                         <?php

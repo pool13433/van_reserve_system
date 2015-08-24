@@ -1,6 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css"/>
 <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css"/>
-<!--        <link rel="stylesheet" type="text/css" href="../css/vanStyle.css"/>-->
 
 <!-- Jquery -->
 <script type="text/javascript" src="../js/jquery.min.js"></script>

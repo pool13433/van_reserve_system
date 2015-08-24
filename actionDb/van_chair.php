@@ -71,7 +71,7 @@ switch ($_GET['action']) {
         break;
     case 'getChairsByVanId':
         $ban_id = $_GET['id'];
-        $reserve_date = $_GET['reserve_date'];
+        $reserve_date = (empty($_GET['reserve_date']) ? '' : $_GET['reserve_date']);
         // url test : http://localhost/van/actionDb/van_chair.php?action=getChairsByVanId&id=9
         try {
             $value = array(
@@ -84,7 +84,7 @@ switch ($_GET['action']) {
             $sql .= ' van_chair vc';
             $sql .= ' LEFT JOIN';
             $sql .= ' reserve_chair rc ON rc.vc_id = vc.vc_id';
-            if (!empty($reserve_date)) {
+            if (isset($reserve_date)) {
                 $sql .= ' AND rc.rsc_usabledate = STR_TO_DATE(:reserve_date,\'%d/%m/%Y\')';
                 $value['reserve_date'] = $reserve_date;
             }
@@ -96,7 +96,7 @@ switch ($_GET['action']) {
 //                $sql .= ' AND r.rs_usabledate = STR_TO_DATE(:reserve_date,\'%d/%m/%Y\')';
 //                $value['reserve_date'] = $reserve_date;
 //            }
-            $sql .= ' WHERE 1=1 ';            
+            $sql .= ' WHERE 1=1 ';
             $sql .= ' AND vc.v_id =:id';
             //echo 'sql ::==' . $sql;
             $stmt = $pdo->conn->prepare($sql);

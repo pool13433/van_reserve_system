@@ -1,5 +1,5 @@
-<div class="col-sm-10">
-    <div class="col-lg-10 col-lg-offset-1">
+<div class="col-sm-11">
+    <div class="col-lg-12 col-lg-offset-0">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>

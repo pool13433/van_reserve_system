@@ -16,44 +16,38 @@
             session_start();
         }
         ?>
-        <?php if (empty($_SESSION['person'])) { ?>
-            <?php
-            if (!empty($_GET['page']) && $_GET['page'] == 'register') {
-                include './register.php';
-            } else {
-                include './login.php';
-            }
-            ?>
-        <?php } else { ?>
-            <div class="container-fluid" style="margin-top: 100px;">                                     
-                <div class="row clearfix">
-                    <?php include '../filecenter/menu-header.php'; ?> 
-<!--                    <div class="col-md-3 column">
-                        <?php include '../filecenter/menu-left.php'; ?>
-                    </div>-->
-                    <div class="col-md-12 column">
-                        <?php
-                        // ตรวจสอบ ค่า ว่ามีการส่งค่ามาหรือเปล่า
-                        if (!empty($_GET)) {  // มีค่า
-                            $page = $_GET['page'] . '.php';
-                            if (file_exists($page)) {
-                                include $page;
-                            } else {
-                                // หน้าจอโปรแกรมกรณีเรียกหน้า้พจไม่ถูกต้อง 404
-                                include '../filecenter/404.php';
-                            }
+        <div class="container-fluid" style="margin-top: 100px;">                                     
+            <div class="row clearfix">
+                <?php
+                if ($_GET['page'] != 'login') {
+                    include '../filecenter/menu-header.php';
+                }
+                ?> 
+                <!--                    <div class="col-md-3 column">
+                <?php include '../filecenter/menu-left.php'; ?>
+                                    </div>-->
+                <div class="col-md-12 column">
+                    <?php
+                    // ตรวจสอบ ค่า ว่ามีการส่งค่ามาหรือเปล่า
+                    if (!empty($_GET)) {  // มีค่า
+                        $page = $_GET['page'] . '.php';
+                        if (file_exists($page)) {
+                            include $page;
                         } else {
-                            // หน้าจอโปรแกรม default ที่เข้ามาจะเห็นหน้าแรก
+                            // หน้าจอโปรแกรมกรณีเรียกหน้า้พจไม่ถูกต้อง 404
+                            include '../filecenter/404.php';
                         }
-                        /*
-                         *  Load Modal
-                         */
-                        ?>
+                    } else {
+                        // หน้าจอโปรแกรม default ที่เข้ามาจะเห็นหน้าแรก
+                    }
+                    /*
+                     *  Load Modal
+                     */
+                    ?>
 
-                    </div>
                 </div>
-                <?php include '../filecenter/footer.php'; ?>
             </div>
-        <?php } ?>
+            <?php include '../filecenter/footer.php'; ?>
+        </div>
     </body>
 </html>

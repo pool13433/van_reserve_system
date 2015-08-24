@@ -122,13 +122,20 @@ switch ($_GET['action']) {
     case 'delete':
         try {
             $pdo->conn = $pdo->open();
-            $sql = 'DELETE FROM province WHERE pv_id =:id';
+
+            $stmt = $pdo->conn->prepare('SELECT * FROM person WHERE id =:id');
+            $exe = $stmt->execute(array(
+                ':id' => $_POST['id'],
+            ));
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+
+            $sql = 'DELETE FROM person WHERE id =:id';
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute(array(
                 ':id' => $_POST['id'],
             ));
             if ($exe) {
-                echo $pdo->returnJson(true, 'ลบข้อมูล', 'ลบสำเร็จ', './index.php?page=list-province');
+                echo $pdo->returnJson(true, 'ลบข้อมูล', 'ลบสำเร็จ', './index.php?page=list-person&status=' . $result->status);
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ลบ ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }

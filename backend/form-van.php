@@ -65,7 +65,7 @@ if (!empty($_GET['id'])) {
                 <div class="form-group">
                     <label for="v_name" class="col-sm-2 control-label">ชื่อสายรถ</label>
                     <div class="col-sm-10">
-                        <input type="hidden" name="id" id="id"
+                        <input type="text" name="id" id="id"
                                value="<?= $v_id ?>"/>
                         <input type="text" class="form-control" name="v_name" id="v_name" placeholder="ชื่อสายรถ" 
                                required data-bv-notempty-message="กรุณากรอกชื่อสายรถ" 
@@ -172,7 +172,7 @@ if (!empty($_GET['id'])) {
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="v_chair" class="col-sm-2 control-label">สร้างผังที่นั่ง</label>
+                    <label for="v_chair" class="col-sm-1 control-label">สร้างผังที่นั่ง</label>
                     <?php require './map_van_chair.php'; ?>
                 </div>
                 <div class="form-group">
