@@ -15,20 +15,38 @@
                 <div class="col-sm-12">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="v_chair" class="col-sm-2 control-label">ระยะทางรวม</label>
-                            <div class="col-sm-3">
+                            <div class="col-sm-5">
                                 <div class="input-group">
                                     <input type="hidden" name="page" value="van_choose_detail" />
                                     <input type="hidden" name="van_id" value="<?= $_GET['van_id'] ?>" />
                                     <input type="hidden" name="go_start" value="<?= $_GET['go_start'] ?>" />
                                     <input type="hidden" name="go_start_place" value="<?= $_GET['go_start_place'] ?>" />
                                     <input type="hidden" name="go_end" value="<?= $_GET['go_end'] ?>" />
-                                    <input type="hidden" name="go_end_place" value="<?= $_GET['go_end_place'] ?>" />                                    
-                                    <input type="text" class="form-control" name="reserve_date" id="reserve_date" value="<?= $reserve_date ?>"/>
-                                    <span class="input-group-btn" for="date-fld">
-                                        <button type="submit" class="btn btn-primary"> ค้นหาเที่ยวรถ</button>
+                                    <input type="hidden" name="go_end_place" value="<?= $_GET['go_end_place'] ?>" />  
+
+
+                                    <span class="input-group-addon" for="date-fld">
+                                        วันที่ต้องการใช้บริการ
                                     </span>
+                                    <input type="text" class="form-control" name="reserve_date" id="reserve_date" value="<?= $reserve_date ?>"/>                                    
                                 </div> 
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
+                                    <span class="input-group-addon" for="date-fld">
+                                        กรอกเวลา
+                                    </span>
+                                    <input type="text" class="form-control clockpicker" placeholder="h:m"  
+                                           required data-bv-notempty-message="กรุณากรอกเวลารถออก" name="van_drive_start" id="drive_start"/>
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <span class="input-group-btn" for="date-fld">
+                                    <button type="submit" class="btn btn-primary"> ค้นหาเที่ยวรถ</button>
+                                </span>
                             </div>
                         </div>
                     </form>
@@ -42,7 +60,6 @@
                         $pdo = new PDOMysql();
                         $pdo->conn = $pdo->open();
                         $sql = 'SELECT * FROM van v ';
-                        $sql .= ' LEFT JOIN person p ON p.id = v.v_driver';
                         $sql .= ' LEFT JOIN company c ON c.c_id = v.v_company';
                         $sql .= ' WHERE v_id =:v_id';
                         $stmt = $pdo->conn->prepare($sql);
@@ -65,13 +82,9 @@
                                     <td><?= $result->v_detail ?></td>
                                 </tr>
                                 <tr>
-                                    <td>ชื่อพนักงานขับรถ</td>
-                                    <td><?= $result->fname . '   ' . $result->lname ?></td>
-                                </tr>
-                                <tr>
                                     <td>บริษัท</td>
                                     <td><?= $result->c_name ?></td>
-                                </tr>
+                                </tr>                                
                                 <tr>
                                     <td colspan="2">เลือกจุดขึ้นและลง ตารางด้านล่างนี้<i class="glyphicon glyphicon-arrow-down"></i></td>
                                 </tr>
@@ -92,7 +105,10 @@
                                     <td>                                        
                                         <select class="form-control" name="place_begin" id="place_begin" onchange="findPlace(this, '<?= PLACE_BEGIN ?>')">
                                             <?php foreach ($results as $index => $place) { ?>
-                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" itemprop="<?= $place->vp_kilomate ?>" label="<?= $place->vp_hierarchy ?>"><?= $place->pvp_name ?></option>
+                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" 
+                                                        itemprop="<?= $place->vp_kilomate ?>" title="<?= $place->vp_hierarchy ?>">
+                                                            <?= $place->pvp_name ?>
+                                                </option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -102,7 +118,10 @@
                                     <td>
                                         <select class="form-control" name="place_end" id="place_end" onchange="findPlace(this, '<?= PLACE_END ?>')">
                                             <?php foreach ($results as $index => $place) { ?>
-                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" itemprop="<?= $place->vp_kilomate ?>" label="<?= $place->vp_hierarchy ?>"><?= $place->pvp_name ?></option>
+                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" 
+                                                        itemprop="<?= $place->vp_kilomate ?>" title="<?= $place->vp_hierarchy ?>">
+                                                            <?= $place->pvp_name ?>
+                                                </option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -141,9 +160,9 @@
     $(document).ready(function () {
         var van_id = '<?= $van_id ?>';
         setLoadVanChair(van_id);
-        loadDatePicker();
+        initDatePicker();
     });
-    function loadDatePicker() {
+    function initDatePicker() {
         //http://www.daterangepicker.com/#ex5
         var datepicker = $('#reserve_date');
         datepicker.prop('readOnly', true);
@@ -152,11 +171,10 @@
             showDropdowns: true,
             format: 'DD/MM/YYYY',
             locale: DATEPICKER_LOCAL,
-        },
-                function (start, end, label) {
-                    var years = moment().diff(start, 'years');
-                    //alert("You are " + years + " years old.");
-                });
+        }, function (start, end, label) {
+            var years = moment().diff(start, 'years');
+            //alert("You are " + years + " years old.");
+        });
     }
     function setLoadVanChair(van_id) {
         var arrayChairs = [];
@@ -303,7 +321,7 @@
                 'jsonObjectPlace': arrayObjectToJsonString(objectPlace),
                 'van_id': '<?= $result->v_id ?>',
                 'price': totalPrice,
-                'reserve_date' : $('#reserve_date').val(),
+                'reserve_date': $('#reserve_date').val(),
             }, function (jsonReturn) {
                 if (jsonReturn.status) {
                     alert(jsonReturn.message);
@@ -314,7 +332,7 @@
         }
     }
     function findPlace(eleHierarchy, place_type) {
-        var hierarchy = $(eleHierarchy).find('option').filter(":selected").attr('label');
+        var hierarchy = $(eleHierarchy).find('option').filter(":selected").attr('title');
         console.log('hierarchy ::==' + hierarchy);
         if (hierarchy != '') {
             $.get('../actionDb/van_place.php?action=getPlacesByHierarchy', {
@@ -330,7 +348,7 @@
                 }
                 eleCombo.empty();
                 $.each(jsonPlace, function (index, place) {
-                    eleCombo.append('<option value="' + place.vp_id + '" class="' + place.price + '" itemprop="' + place.vp_kilomate + '" label="' + place.vp_hierarchy + '">' + place.pvp_name + '</option>');
+                    eleCombo.append('<option value="' + place.vp_id + '" class="' + place.price + '" itemprop="' + place.vp_kilomate + '" title="' + place.vp_hierarchy + '">' + place.pvp_name + '</option>');
                 });
                 var optionLength = eleCombo.find('option').length;
                 if (optionLength === 0) {

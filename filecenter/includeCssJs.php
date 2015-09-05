@@ -16,6 +16,9 @@
 <link rel="stylesheet" href="../assets/bootstrapvalidator/dist/css/bootstrapValidator.min.css"/>
 <script type="text/javascript" src="../assets/bootstrapvalidator/dist/js/bootstrapValidator.min.js"></script>
 
+<link rel="stylesheet" href="../assets/multi-select/css/multi-select.css"/>
+<script type="text/javascript" src="../assets/multi-select/js/jquery.multi-select.js"></script>
+
 
 <!--  Mutiselect -->
 <link rel="stylesheet" href="../assets/bootstrap-select/dist/css/bootstrap-select.css"/>

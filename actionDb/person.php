@@ -202,6 +202,21 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
+    case 'getDriver':
+        try {
+            $pdo->conn = $pdo->open();
+            $sql = 'SELECT * FROM person WHERE status =:person_driver ';
+            $sql .= ' ORDER BY fname ASC';
+            $stmt = $pdo->conn->prepare($sql);
+            $stmt->execute(array(':person_driver' => DRIVER_ID));
+            $drivers = $stmt->fetchAll(PDO::FETCH_OBJ);
+            echo json_encode($drivers);
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
     default:
         break;
 }

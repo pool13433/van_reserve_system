@@ -76,7 +76,7 @@ if (!empty($_GET['id'])) {
                     <label for="idcard" class="col-sm-4 control-label">รหัสบัตรประชาชน</label>
                     <div class="col-sm-6">
                         <input type="text" class="form-control" name="idcard" placeholder="รหัสบัตรประชาชน" 
-                               required data-bv-notempty-message="กรุณากรอกรหัสบัตรประชาชน" 
+                               required data-bv-notempty-message="กรุณากรอกรหัสบัตรประชาชน" maxlength="13"
                                value="<?= $idcard; ?>"/>
                     </div>
                 </div>
@@ -142,8 +142,8 @@ if (!empty($_GET['id'])) {
                 <div class="col-md-6">
                     <label for="lname" class="col-sm-4 control-label">เบอร์โทรศัพท์</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" name="mobile" placeholder="เบอร์โทรศัพท์" 
-                               required data-bv-notempty-message="กรุณากรอกเบอร์โทรศัพท์" 
+                        <input type="text" class="form-control" name="mobile" placeholder="เบอร์โทรศัพท์ 10 หลัก" 
+                               required data-bv-notempty-message="กรุณากรอกเบอร์โทรศัพท์"  maxlength="10"
                                value="<?= $mobile; ?>"/>
                     </div>
                 </div>

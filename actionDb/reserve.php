@@ -99,7 +99,28 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
-
+    case 'cancelReserve':
+        try {
+            $reserve_id = $_POST['id'];
+            $pdo->conn = $pdo->open();
+            $sql = 'UPDATE reserve SET rs_status = ' . RS_RESERVE_CANCLE;
+            $sql .= ' WHERE rs_id =:id';
+            $stmt = $pdo->conn->prepare($sql);
+            $exe = $stmt->execute(array(
+                ':id' => $reserve_id,
+            ));
+            if ($exe) {
+                echo $pdo->returnJson(true, 'ยกเลิกการจองเรียบร้อย', 'ยกเลิกสำเร็จ', './index.php?page=history_reserve');
+            } else {
+                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ยกเลิก ไม่สำเร็จ [ ' . $sql . ' ]', '');
+            }
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
+        
     default:
         break;
 }

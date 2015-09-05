@@ -33,11 +33,11 @@
                         </tr>
                         <tr>
                             <td><h2>เวลาออก</h2></td>
-                            <td><h3><label class="label label-info"><?= $result->v_drivestart ?></label></h3></td>
+                            <td><h3><label class="label label-info"><?= $result->vt_drivestart ?></label></h3></td>
                         </tr>
                         <tr>
                             <td><h2>เวลาถึง</h2></td>
-                            <td><h3><label class="label label-info"><?= $result->v_driveend ?></label></h3></td>
+                            <td><h3><label class="label label-info"><?= $result->vt_driveend ?></label></h3></td>
                         </tr>
                     </tbody>
                 </table>

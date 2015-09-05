@@ -18,9 +18,7 @@
                     <th>ชื่อสายเดินรถ</th>
                     <th>บริษัท</th>
                     <th>ระยะทาง</th>
-                    <th>ระยะเวลาออก</th>
-                    <th>ระยะเวลาถึง</th>
-                    <th>พนักงานขับรถ</th>
+                    <th>จัดการเวลาการเดินทาง</th>
                     <th>แก้ไข</th>
                     <th>ลบ</th>
                 </tr>
@@ -29,9 +27,11 @@
                 <?php
                 $pdo = new PDOMysql();
                 $pdo->conn = $pdo->open();
-                $sql = 'SELECT * FROM van v';
+                $sql = 'SELECT ';
+                $sql .= " v.v_id, `v_name`, `v_detail`, `v_company`,`v_chair`, `v_roadlength`, `v_updatedate`, `v_updateby`";                
+                $sql .= " ,`c_id`, `c_name`, `c_onwer`, `c_address`, `c_mobile`, `c_updatedate`, `c_updateby` ";
+                $sql .= '  FROM van v';
                 $sql .= ' LEFT JOIN company c ON c.c_id = v.v_company ';
-                $sql .= ' LEFT JOIN person p ON p.id = v.v_driver ';
                 $sql .= ' ORDER BY v.v_id ASC';
                 $stmt = $pdo->conn->prepare($sql);
                 $stmt->execute();
@@ -43,16 +43,20 @@
                         <td><?= $value->v_name ?></td>
                         <td><?= $value->c_name ?></td>
                         <td><?= $value->v_roadlength ?></td>
-                        <td><?= $value->v_drivestart ?></td>
-                        <td><?= $value->v_driveend ?></td>
-                        <td><?= $value->fname . ' ' . $value->lname ?></td>
                         <td style="width: 8%;">
-                            <a href="index.php?page=form-van&id=<?= $value->v_id ?>" class="btn btn-warning">
+                            <a href="index.php?page=list-van_time&van_id=<?= $value->v_id ?>" 
+                               class="btn btn-info btn-sm">
+                                <i class="glyphicon glyphicon-time"></i> จัดการเวลากาเดินรถ
+                            </a>
+                        </td>
+                        <td style="width: 8%;">
+                            <a href="index.php?page=form-van&van_id=<?= $value->v_id ?>" class="btn btn-warning btn-sm">
                                 <i class="glyphicon glyphicon-pencil"></i>แก้ไข
                             </a>
                         </td>
                         <td style="width: 8%;">
-                            <button type="button" class="btn btn-danger" onclick="delete_data(<?= $value->v_id ?>, '../actionDb/van.php?action=delete')">
+                            <button type="button" class="btn btn-danger btn-sm" 
+                                    onclick="delete_data(<?= $value->v_id ?>, '../actionDb/van.php?action=delete')">
                                 <i class="glyphicon glyphicon-trash"></i>ลบ
                             </button>
                         </td>

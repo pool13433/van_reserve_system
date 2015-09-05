@@ -22,10 +22,6 @@
                         <th>ลำดับ</th>
                         <th>ชื่อ</th>
                         <th>ที่นั่งทั้งหมด</th>
-                        <th>เวลาออก</th>
-                        <th>เวลาถึง</th>
-    <!--                        <th>ที่นั่งว่าง</th>
-                        <th>ที่นั่งเต็ม</th>-->
                         <th>เลือก</th>
                     </tr>
                 </thead>
@@ -50,8 +46,9 @@
                         $sql .= ' LEFT JOIN reserve_chair rc ON rc.vc_id = vc.vc_id ';
                         $sql .= ' LEFT JOIN reserve r ON r.rs_id = rc.rs_id WHERE rs_status IS NOT NULL) as chair_full,';
 
-                        $sql .= ' vp.*';
+                        $sql .= ' vp.*,vt.*';
                         $sql .= ' FROM van v';
+                        $sql .= ' LEFT JOIN van_time vt ON vt.v_id = v.v_id';
                         $sql .= ' LEFT JOIN van_place vp ON vp.v_id = v.v_id';
                         $sql .= ' WHERE  vp.pvp_id IN(:go_start_place,:go_end_place)';
                         $sql .= ' GROUP BY v.v_id';
@@ -69,8 +66,6 @@
                                 <td style="width: 8%;"><?= ($key + 1) ?></td>                                                    
                                 <td><?= $value->v_name ?></td>
                                 <td><?= $value->v_chair ?></td>
-                                <td><?= $value->v_drivestart ?></td>
-                                <td><?= $value->v_driveend ?></td>
             <!--                                <td><?= $value->chair_empty ?></td>
                                 <td><?= $value->chair_full ?></td>-->
                                 <td style="width: 8%;">

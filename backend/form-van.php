@@ -10,20 +10,25 @@ $v_id = '';
 $v_name = '';
 $v_detail = '';
 $v_company = '';
-$v_driver = '';
 $v_chair = '0';
 $v_roadlength = '';
-$v_drivestart = '';
-$v_driveend = '';
+$vt_id = '';
 $v_updatedate = '';
 $v_updateby = '';
 
 /*
  * ตรวจสอบ id เพื่อดูว่ากำลังแก้ไขหรือสร้างใหม่ด้วย ฟังชั่น empty() = ว่าง , !empty = ไม่ว่าง
  */
-if (!empty($_GET['id'])) {
-    $stmt = $pdo->conn->prepare('SELECT * FROM van WHERE v_id =:id');
-    $stmt->execute(array(':id' => $_GET['id']));
+if (!empty($_GET['van_id'])) {
+    $sql = 'SELECT * FROM van v WHERE v.v_id =:van_id';
+    $stmt = $pdo->conn->prepare($sql);
+    
+    /*
+     * Debug Code
+     */
+    //echo '<pre> sql ::=='.$sql.'</pre>';
+    
+    $stmt->execute(array(':van_id' => $_GET['van_id']));
     $result = $stmt->fetch(PDO::FETCH_OBJ);
 
     /*
@@ -33,11 +38,10 @@ if (!empty($_GET['id'])) {
     $v_name = $result->v_name;
     $v_detail = $result->v_detail;
     $v_company = $result->v_company;
-    $v_driver = $result->v_driver;
     $v_chair = $result->v_chair;
     $v_roadlength = $result->v_roadlength;
-    $v_drivestart = $result->v_drivestart;
-    $v_driveend = $result->v_driveend;
+    
+    
     $v_updatedate = $result->v_updatedate;
     $v_updateby = $result->v_updateby;
 }
@@ -65,8 +69,10 @@ if (!empty($_GET['id'])) {
                 <div class="form-group">
                     <label for="v_name" class="col-sm-2 control-label">ชื่อสายรถ</label>
                     <div class="col-sm-10">
-                        <input type="text" name="id" id="id"
+                        <input type="hidden" name="van_id" id="van_id"
                                value="<?= $v_id ?>"/>
+                        <input type="hidden" name="van_time_id" id="van_time_id"
+                               value="<?= $vt_id ?>"/>
                         <input type="text" class="form-control" name="v_name" id="v_name" placeholder="ชื่อสายรถ" 
                                required data-bv-notempty-message="กรุณากรอกชื่อสายรถ" 
                                value="<?= $v_name ?>"/>
@@ -79,27 +85,7 @@ if (!empty($_GET['id'])) {
                                   required data-bv-notempty-message="กรุณากรอกรายละเอียดรถ" ><?= $v_detail ?></textarea>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="v_driver" class="col-sm-2 control-label">พนักงานขับรถ</label>
-                    <div class="col-sm-10">
-                        <?php
-                        $sql = 'SELECT * FROM person WHERE status = ' . DRIVER_ID;
-                        $sql .= ' ORDER BY fname ASC';
-                        $stmt = $pdo->conn->prepare($sql);
-                        $stmt->execute();
-                        $drivers = $stmt->fetchAll(PDO::FETCH_OBJ);
-                        ?>
-                        <select class="form-control" name="v_driver" id="v_driver">
-                            <?php foreach ($drivers as $index => $driver) { ?>
-                                <?php if ($v_driver == $driver->id) { ?>
-                                    <option value="<?= $driver->id ?>" selected><?= $driver->fname ?></option>
-                                <?php } else { ?>
-                                    <option value="<?= $driver->id ?>"><?= $driver->fname ?></option>
-                                <?php } ?>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <label for="v_place" class="col-sm-2 control-label">รายการเส้นทางการเดินรถ</label>
                     <div class="col-sm-10">
@@ -148,29 +134,7 @@ if (!empty($_GET['id'])) {
                             <?php } ?>
                         </select>
                     </div>
-                </div>   
-                <div class="form-group">
-                    <label for="v_company" class="col-sm-2 control-label">เวลารถออก</label>
-                    <div class="col-sm-2">
-                        <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                            <input type="text" class="form-control clockpicker" placeholder="h:m"  
-                                   required data-bv-notempty-message="กรุณากรอกเวลารถออก" name="drive_start" value="<?= $v_drivestart ?>"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
-                            </span>
-                        </div> 
-                    </div>
-                    <label for="v_company" class="col-sm-2 control-label">เวลารถถึงที่หมาย</label>
-                    <div class="col-sm-2">
-                        <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                            <input type="text" class="form-control clockpicker" placeholder="h:m" 
-                                   required data-bv-notempty-message="กรุณากรอกเวลารถถึงที่หมาย" name="drive_end" value="<?= $v_driveend ?>"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
-                            </span>
-                        </div>  
-                    </div>
-                </div>
+                </div>                   
                 <div class="form-group">
                     <label for="v_chair" class="col-sm-1 control-label">สร้างผังที่นั่ง</label>
                     <?php require './map_van_chair.php'; ?>
@@ -229,6 +193,7 @@ if (!empty($_GET['id'])) {
     var select2Places;
     var mutiSelect;
     var select2;
+    var mutiselect;
     var countValidInput = 0;
     $(document).ready(function () {
 
@@ -257,13 +222,17 @@ if (!empty($_GET['id'])) {
             });
             console.log("removing val=" + e.val + " choice=" + JSON.stringify(e.choice));
             console.log(' print ::==' + print_properties_in_object(arrayPlaceIdSelect));
+
+
+
         });
+
         /*
          * Select2 Dropdown Mutiselect
          */
 
         //select2.on
-        if ($('#id').val() !== '') {
+        if ($('#van_id').val() !== '') {
             setLoadVanForm();
         }
 
@@ -293,12 +262,12 @@ if (!empty($_GET['id'])) {
                 var arrayChair = [];
                 arrayChair = getChair().length;
                 console.log('arrayChair ::==' + arrayChair);
-                console.log('countValidInput ::=='+countValidInput);
+                console.log('countValidInput ::==' + countValidInput);
                 if (arrayChair === 0) {
                     alert('กรุณาสร้างที่นั่ง ตั้งแต่ 1 ที่นั่งขึ้นไป กรุณาตรวจสอบ');
-                } else if(arrayChair !== countValidInput){
+                } else if (arrayChair !== countValidInput) {
                     alert('กรุณากรอกชื่อที่นั่งในครบถ้วน');
-                }else {
+                } else {
                     var isConfirm = confirm('ยืนยันการบันทึกการจัดการสายเดินทางรถ ใช่[OK] || ยกเลิก[Cancle]');
                     if (isConfirm) {
                         $.ajax({
@@ -329,9 +298,9 @@ if (!empty($_GET['id'])) {
     function getFormValue() {
         var places = arrayPlaceIdSelect; //$('.select2').select2('val');
         console.log('places ::==' + print_properties_in_object(places));
-        var van_id = $('#id').val();
+        var van_id = $('#van_id').val();
+        var van_time_id = $('#van_time_id').val();
         var name = $('#v_name').val();
-        var driver = $('#v_driver').val();
         var roadlength = $('#v_roadlength').val();
         var drive_start = $('input[name=drive_start]').val();
         var drive_end = $('input[name=drive_end]').val();
@@ -343,12 +312,12 @@ if (!empty($_GET['id'])) {
         //console.log('places ::==' + places);
         var obj = new Object();
         obj.van_id = van_id;
+        obj.van_time_id = van_time_id;
         obj.name = name;
         obj.places = places;
         obj.roadlength = roadlength;
         obj.drive_start = drive_start;
         obj.drive_end = drive_end;
-        obj.driver = driver;
         obj.detail = detail;
         obj.company = company;
         obj.chair = chair;
@@ -373,12 +342,12 @@ if (!empty($_GET['id'])) {
                 //console.log('is_input ::==' + is_input);
                 if (is_input) {
                     var value = chair.val();
-                    if(value!==''){
-                        countValidInput ++;                                                
+                    if (value !== '') {
+                        countValidInput++;
                     }
                     arrayChairs.push({'chair_x': indexX, 'chair_y': indexY, 'value': value});
                 }
-            });         
+            });
         });
         //console.log('arrayChairs ::' + print_properties_in_object(arrayChairs[4]));
         return arrayChairs;
@@ -389,9 +358,9 @@ if (!empty($_GET['id'])) {
         var countInput = $('#areaChair').find('input[type=text]').length;
         $('#v_chair').val(countInput);
     }
-    function builderInputHtml(value){
+    function builderInputHtml(value) {
         var object_html = ' <div class="input-group"> ';
-        object_html += ' <input type="text" class="form-control" value="'+value+'">';
+        object_html += ' <input type="text" class="form-control" value="' + value + '">';
         object_html += ' <div class="input-group-btn">';
         object_html += '     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">';
         object_html += '         <span class="caret"></span>';
@@ -406,14 +375,14 @@ if (!empty($_GET['id'])) {
         object_html += ' </div>';
         return object_html;
     }
-    function replaceButton(input){        
+    function replaceButton(input) {
         var obj_button = '<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)">';
-             obj_button += '   <i class="glyphicon glyphicon-plus-sign"></i>';
-             obj_button += '</button>  ';
-         var parent = $(input).closest('.input-group');
+        obj_button += '   <i class="glyphicon glyphicon-plus-sign"></i>';
+        obj_button += '</button>  ';
+        var parent = $(input).closest('.input-group');
         $(parent).replaceWith(obj_button);
     }
-    function clearInput(input){
+    function clearInput(input) {
         var textbox = $(input).closest('.input-group').find('.form-control');
         $(textbox).val('');
     }
@@ -423,14 +392,14 @@ if (!empty($_GET['id'])) {
         $.each(chairs, function (indexTr, objectTr) {
             var chairTrs = $(objectTr).find('.input-group'); //$(objectTr).find('input[type=text]');
             $.each(chairTrs, function (indexTd, objectTd) {
-                $(objectTd).replaceWith('<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)"><i class="glyphicon glyphicon-plus-sign"></i></button>');               
+                $(objectTd).replaceWith('<button type="button" class="btn btn-primary btn-lg" onclick="replaceInput(this)"><i class="glyphicon glyphicon-plus-sign"></i></button>');
             });
         });
     }
     function setLoadVanForm() {
         var arrayChairs = [];
         var arrayPlace = [];
-        var id = $('#id').val();
+        var id = $('#van_id').val();
         // Load Chairs
         $.get('../actionDb/van_chair.php?action=getChairsByVanId', {
             id: id
@@ -450,7 +419,7 @@ if (!empty($_GET['id'])) {
                         if (chair_.vc_x == indexX && chair_.vc_y == indexY) {
                             console.log('\n set value ');
                             //$(chair).replaceWith('<input type="text" class="form-control" name="" value="' + chair_.vc_label + '"/>');
-                             $(chair).replaceWith(builderInputHtml(chair_.vc_label));
+                            $(chair).replaceWith(builderInputHtml(chair_.vc_label));
                         }
                     });
                 });
@@ -465,8 +434,7 @@ if (!empty($_GET['id'])) {
                 arrayPlace.push(objectChair.pvp_id.toString());
                 arrayPlaceIdSelect.push(objectChair.pvp_id.toString());
             });
-            //$('.select2').select2('val', arrayPlace);
-            select2.select2("val", arrayPlace);
+            $('.select2').select2('val', arrayPlace);
         }, 'json');
 
         //http://www.jqueryrain.com/?B83aD_dg

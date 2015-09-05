@@ -9,11 +9,11 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
             <i class="glyphicon glyphicon-list-alt"></i> ฟอร์มจัดการระยะทางแต่ละจุดขึ้น-ลง
         </h4>
-<!--        <div class="btn-group pull-right">
-            <a href="index.php?page=list-province_place" class="btn btn-info">
-                <i class="glyphicon glyphicon-arrow-left"></i> ย้อนกลับ
-            </a>
-        </div>-->
+        <!--        <div class="btn-group pull-right">
+                    <a href="index.php?page=list-province_place" class="btn btn-info">
+                        <i class="glyphicon glyphicon-arrow-left"></i> ย้อนกลับ
+                    </a>
+                </div>-->
     </div>
     <div class="panel-body">    
         <div class="form-group">
@@ -110,6 +110,14 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
     </div>
 </div>
 <script type="text/javascript">
+    $(document).ready(function () {
+        var tableBody = $('#area_van_place');
+        var children_length = tableBody.children().length;
+        console.log('children_length ::==' + children_length);
+        if (children_length > 0) {
+            tableBody.find('tr:eq(0)').first().find('td:eq(3)').find('input').attr('disabled',true); // disable input
+        }
+    });
     function changHierarchy(index, type, id) {
         $.get('../actionDb/province_place.php?action=changHierarchy', {
             type: type,

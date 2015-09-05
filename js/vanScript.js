@@ -60,6 +60,7 @@ $(document).ready(function () {
         //autoclose: true,
         'default': 'now'
     });
+    $('.clockpicker').unbind();
 
 });
 /*

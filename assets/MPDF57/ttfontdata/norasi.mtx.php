@@ -13,7 +13,7 @@ $desc=array (
 );
 $up=-125;
 $ut=50;
-$ttffile='C:/xampp/htdocs/buusk/utils/MPDF57/ttfonts/Norasi.ttf';
+$ttffile='C:/xampp/htdocs/van/assets/MPDF57/ttfonts/Norasi.ttf';
 $TTCfontID='0';
 $originalsize=103412;
 $sip=false;

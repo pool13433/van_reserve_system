@@ -18,13 +18,14 @@ ob_start();
             require_once '../mysql_con/PDOMysql.php';
             $pdo = new PDOMysql();
             $pdo->conn = $pdo->open();
-            $sql = ' SELECT  rs.*,p.*,v.*,';
+            $sql = ' SELECT  rs.*,p.*,v.*,vt.*,';
             $sql .= ' (SELECT pvp.pvp_name FROM van_place vp LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
             $sql .=' WHERE vp.vp_id = rs.vp_idstart) as place_start,';
             $sql .= ' (SELECT pvp.pvp_name FROM van_place vp LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id';
             $sql .=' WHERE vp.vp_id = rs.vp_idend) as place_end';
             $sql .= ' FROM reserve rs';
             $sql .= ' LEFT JOIN van v ON v.v_id = rs.v_id';
+            $sql .= ' LEFT JOIN van_time vt ON vt.v_id = v.v_id';
             $sql .= ' LEFT JOIN person p ON p.id = rs.cus_id';
             $sql .= ' WHERE rs_id = ' . $_GET['reserve_id'];
             //echo 'sql ::==' . $sql;
@@ -67,11 +68,11 @@ ob_start();
                     </tr>
                     <tr>
                         <td><h2>เวลารถออก</h2></td>
-                        <td><?= $reserve->v_drivestart ?></td>
+                        <td><?= $reserve->vt_drivestart ?></td>
                     </tr>
                     <tr>
                         <td><h2>เวลารถถึง</h2></td>
-                        <td><?= $reserve->v_driveend ?></td>
+                        <td><?= $reserve->vt_driveend ?></td>
                     </tr>
                     <tr>
                         <td><h2>วันที่ต้องชำระเงินก่อน</h2></td>

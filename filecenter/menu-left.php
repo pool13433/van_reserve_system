@@ -44,7 +44,7 @@ $authen = $_SESSION['person'];
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTow">
                         <span class="glyphicon glyphicon glyphicon-th-large">
-                        </span>เมนูจัดการข้อมูลรถตู้</a>
+                        </span>เมนูจัดการรถตู้</a>
                 </h4>
             </div>
             <div id="collapseTow" class="panel-collapse collapse">
@@ -52,27 +52,27 @@ $authen = $_SESSION['person'];
                     <table class="table">
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-company">จัดการบริษัทเดินรถ</a>
+                                <a href="index.php?page=list-company">จัดการ=> บริษัทเดินรถ</a>
                             </td>
                         </tr>   
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-province">จัดการจังหวัดเส้นทางการเดินรถ</a>
+                                <a href="index.php?page=list-province">จัดการ=> จังหวัดเส้นทางการเดินรถ</a>
                             </td>
                         </tr>        
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-province_place">จัดการข้อมูลสถาที่จุดขึ้น-ลงแต่ละจังหวัด</a>
+                                <a href="index.php?page=list-province_place">จัดการ=> สถาที่จุดขึ้น-ลงแต่ละจังหวัด</a>
                             </td>
                         </tr> 
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=list-van">จัดการข้อมูลจัดรถตู้</a>
+                                <a href="index.php?page=list-van">จัดการ=> จัดรถตู้</a>
                             </td>
                         </tr> 
                         <tr>
                             <td onclick="setAccordion(this)">
-                                <a href="index.php?page=form-van_place">จัดการระยะทางสถานที่ขึ้น-ลงของรถตู้</a>
+                                <a href="index.php?page=form-van_place">จัดการ=> ระยะทางสถานที่ขึ้น-ลงของรถตู้</a>
                             </td>
                         </tr>  
                     </table>
@@ -113,13 +113,13 @@ $authen = $_SESSION['person'];
                         <tr>
                             <td onclick="setAccordion(this)">
                                 <span class="glyphicon glyphicon-usd"></span>
-                                <a href="index.php?page=">รายงานข้อมูลสมาชิก</a>
+                                <a href="index.php?page=report_person">รายงานข้อมูลสมาชิก</a>
                             </td>
                         </tr>
                         <tr>
                             <td onclick="setAccordion(this)">
                                 <span class="glyphicon glyphicon-user"></span>
-                                <a href="index.php?page=">รายงานข้อมูลการจองรถตู้</a>
+                                <a href="index.php?page=report_reserve">รายงานข้อมูลการจองรถตู้</a>
                             </td>
                         </tr>
                         <tr>

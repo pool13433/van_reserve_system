@@ -14,12 +14,10 @@ switch ($_GET['action']) {
             $pdo->conn = $pdo->open();
             //var_dump($obj_van);
             $van_id = $obj_van['van_id'];
+            $van_time_id = $obj_van['van_time_id'];
             $name = $obj_van['name'];
-            $driver = $obj_van['driver'];
             $company = $obj_van['company'];
             $detail = $obj_van['detail'];
-            $drive_start = $obj_van['drive_start'];
-            $drive_end = $obj_van['drive_end'];
             $chair = $obj_van['chair'];
             $roadlength = $obj_van['roadlength'];
             $arrayPlace = $obj_van['places'];
@@ -28,41 +26,33 @@ switch ($_GET['action']) {
                 ':name' => $name,
                 ':detail' => $detail,
                 ':company' => $company,
-                ':driver' => $driver,
-                ':drivestart' => $drive_start,
-                ':driveend' => $drive_end,
                 ':chair' => $chair,
                 ':roadlength' => $roadlength,
                 ':by' => 1
             );
             if (empty($van_id)) {
                 $sql = ' INSERT INTO `van`( `v_name`,`v_detail`,';
-                $sql .= ' `v_drivestart`,`v_driveend`,';
-                $sql .= ' `v_company`, `v_driver`, `v_chair`, v_roadlength,`v_updatedate`,';
+                $sql .= ' `v_company`,`v_chair`, v_roadlength,`v_updatedate`,';
                 $sql .= ' `v_updateby`) VALUES (';
                 $sql .= ' :name,:detail,';
-                $sql .= ' :drivestart,:driveend,';
-                $sql .= ' :company,:driver,:chair,:roadlength,NOW(),';
+                $sql .= ' :company,:chair,:roadlength,NOW(),';
                 $sql .= ' :by)';
                 $stmt = $pdo->conn->prepare($sql);
                 $exe = $stmt->execute($values);
                 $van_id = $pdo->getLastInsertId();
 
-                /*
-                 * 
-                 */
-            } else {                
+            } else {
                 $sql = ' UPDATE `van` SET ';
                 $sql .= ' `v_name`=:name,`v_detail`=:detail,';
-                $sql .= ' `v_company`=:company,`v_driver`=:driver,';
-                $sql .= ' `v_chair`=:chair,`v_drivestart`=:drivestart,';
-                $sql .= ' `v_driveend`=:driveend,`v_updatedate`=NOW(),';
+                $sql .= ' `v_company`=:company,';
+                $sql .= ' `v_chair`=:chair,`v_updatedate`=NOW(),';
                 $sql .= ' v_roadlength =:roadlength,`v_updateby`=:by ';
                 $sql .= ' WHERE `v_id`=:v_id';
-                
+
                 $values['v_id'] = $van_id;
                 $stmt = $pdo->conn->prepare($sql);
                 $exe = $stmt->execute($values);
+                
             }
 
             if ($exe) {
@@ -72,13 +62,13 @@ switch ($_GET['action']) {
                 $exe = $stmt->execute(array(
                     'v_id' => $van_id,
                 ));
-                
+
                 // ล้างค่า van_chair เพื่อเพิ่ม insert ใหม่
                 $stmt = $pdo->conn->prepare('DELETE FROM van_chair WHERE v_id =:v_id');
                 $exe = $stmt->execute(array(
                     'v_id' => $van_id,
                 ));
-                
+
 
 //                    // อัพเดทลำดับของจุดสายเดินทาง
                 if (count($arrayPlace) > 1) { // ต้องมีตั้งแต่ 2 ขึ้นไป เพราะต้องมี จุดเริ่มและจุด สิ้นสุด                                                

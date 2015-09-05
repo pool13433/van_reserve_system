@@ -24,8 +24,7 @@ include '../mysql_con/PDOMysql.php';
                     <th>เวลารถถึงที่หมาย</th>
                     <th>ราคา</th>
                     <th>สถานะ</th>
-                    <th>ยกเลิก</th>
-                    <th>ปริ้น</th>
+                    <th>#</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,12 +34,13 @@ include '../mysql_con/PDOMysql.php';
                 /*
                  * query sql
                  */
-                $sql = ' SELECT r.*,v.*, ';
+                $sql = ' SELECT r.*,v.*,vt.*, ';
                 $sql .= ' DATE_FORMAT(rs_createdate,\'%d-%m-%Y %h:%i\') as reserve_date,';
                 $sql .= ' (SELECT pvp_name FROM province_place pvp JOIN van_place vp ON vp.pvp_id = pvp.pvp_id WHERE vp.vp_id = r.vp_idstart) as place_begin,';
                 $sql .= ' (SELECT pvp_name FROM province_place pvp JOIN van_place vp ON vp.pvp_id = pvp.pvp_id WHERE vp.vp_id = r.vp_idend) as place_end';
                 $sql .= ' FROM reserve r';
                 $sql .= ' LEFT JOIN van v ON v.v_id = r.v_id';
+                $sql .= ' LEFT JOIN van_time vt ON vt.v_id = v.v_id';
                 $sql .= ' WHERE r.cus_id =:authen_id';
                 $sql .= ' ORDER BY rs_createdate DESC';
                 /*
@@ -58,19 +58,50 @@ include '../mysql_con/PDOMysql.php';
                         <td nowrap><?= $value->reserve_date ?></td>
                         <td><?= $value->place_begin ?></td>
                         <td><?= $value->place_end ?></td>
-                        <td><?= $value->v_drivestart ?></td>
-                        <td><?= $value->v_driveend ?></td>
+                        <td><?= $value->vt_drivestart ?></td>
+                        <td><?= $value->vt_driveend ?></td>
                         <td><?= $value->rs_price ?></td>
-                        <td><?= getDataList($value->rs_status, arrayReserveStatus()) ?></td>
-                        <td style="width: 8%;">
+                        <td>
+                            <span class="label label-<?= getDataListByKey($value->rs_status, arrayReserveStatus(), 'BGCOLOR') ?>">
+                                <?= getDataListByKey($value->rs_status, arrayReserveStatus(), 'NAME') ?>
+                            </span>                            
+                        </td>
+                        <!--<td style="width: 8%;">
                             <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="cancleReserve(<?= $value->rs_id ?>)">
                                 <i class="glyphicon glyphicon-remove"></i> ยกเลิกการจอง      
                             </a>                            
                         </td>
                         <td style="width: 8%;">
-                            <a href="#" class="btn btn-primary btn-sm" onclick="printInvoiceByCase(<?= $value->rs_id?>)">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="printInvoiceByCase(<?= $value->rs_id ?>)">
                                 <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงิน      
                             </a>                            
+                        </td>-->
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    การกระทำ
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <?php if ($value->rs_status != intval(RS_RESERVE_CANCLE)) { ?>
+                                        <li>
+                                            <a href="javascript:void(0)" onclick="cancleReserve(<?= $value->rs_id ?>)">
+                                                <i class="glyphicon glyphicon-remove"></i> ยกเลิกการจอง      
+                                            </a>    
+                                        </li>
+                                    <?php } ?>
+                                    <li>
+                                        <a href="#" onclick="printInvoiceByCase(<?= $value->rs_id ?>)">
+                                            <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงิน      
+                                        </a>   
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="glyphicon glyphicon-pencil"></i> แก้ไข
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 <?php } ?>
@@ -84,7 +115,7 @@ include '../mysql_con/PDOMysql.php';
         //                var news_status = $('#news_status').val();
         //                var startdate = $('#startdate').val();
         //                var enddate = $('#enddate').val();
-        var url = 'http://localhost/van/report/invoice.php?reserve_id='+reserve_id;
+        var url = 'http://localhost/van/report/invoice.php?reserve_id=' + reserve_id;
         //                url += '&news_status=' + news_status;
         //                url += '&startdate=' + startdate;
         //                url += '&enddate=' + enddate;
@@ -92,5 +123,15 @@ include '../mysql_con/PDOMysql.php';
     }
     function cancleReserve(id) {
         console.log(' id ::== ' + id);
+        var isConf = confirm('ยืนยันการ ยกเลิกการจองตั๋วรถ \nถ้ายกเลิกการจองแล้วจะไม่สามารถ คืนสถานะการจองได้ \nใช่[OK]||ไม่ใช่[Cancel]');
+        if (isConf) {
+            $.post('../actionDb/reserve.php?action=cancelReserve', {id: id}, function (response) {
+                if (response) {
+                    alert(response.message);
+                    redirectDelay(response.url, 1);
+                }
+            }, 'json');
+            return false;
+        }
     }
 </script>
