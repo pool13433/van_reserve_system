@@ -45,7 +45,7 @@ ob_start(); // เริ่ม วาด html
 //echo '<br/>';
 //echo 'end ::==' . $_GET['reserve_date_end'];
 ?>
-<h2 style="text-align: center">รายงาน ผู้ใช้งานในระบบ</h2>
+<h2 style="text-align: center">รายงาน ข้อมูลการจองรถตู้</h2>
 <table>
     <thead>
         <tr>

@@ -1,29 +1,55 @@
+<?php
+/*
+ * เงื่อนไขกรณี แก้ไข ข้อมูล
+ */
+$reserve_step_1 = 'index.php?page=van_search';
+$reserve_step_2 = "./index.php?page=van_search_result&go_start=" . $_GET['go_start'] . "&go_start_place=" . $_GET['go_start_place'] . "&go_end=" . $_GET['go_end'] . "&go_end_place=" . $_GET['go_end_place'];
+$reserve_step_3 = "javascript:void(0)";
+$van_id = $_GET['van_id'];
+$province_start_id = $_GET['go_end'];
+$place_start_id = $_GET['go_end_place'];
+$province_end_id = $_GET['go_end'];
+$place_end_id = $_GET['go_end_place'];
+$reserve_date = (empty($_GET['reserve_date']) ? date('d/m/Y') : $_GET['reserve_date']);
+$van_time_start_time = (empty($_GET['van_time_start']) ? date('h:i') : $_GET['van_time_start']);
 
+if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
+    $reserve_step_1 = "javascript:void(0)";
+    $reserve_step_2 = "javascript:void(0)";
+}
+/*
+ * จบ เงื่อนไขกรณี แก้ไข ข้อมูล
+ */
+?>
 <div class="panel panel-primary">
     <div class="panel-heading clearfix">
         <ol class="breadcrumb">
-            <li><a href="index.php?page=van_search">ค้นหาเส้นทางการเดินรถ</a></li>
-            <li ><a href="./index.php?page=van_search_result&go_start=<?= $_GET['go_start'] ?>&go_start_place=<?= $_GET['go_start_place'] ?>&go_end=<?= $_GET['go_end'] ?>&go_end_place=<?= $_GET['go_end_place'] ?>">เลือกรถที่ให้บริการ</a></li>
-            <li class="active"><a href="#">เลือกจุดขึ้น-ลง และที่นั่ง</a></li>
+            <li><a href="<?= $reserve_step_1 ?>">ค้นหาเส้นทางการเดินรถ</a></li>
+            <li ><a href="<?= $reserve_step_2 ?>">เลือกรถที่ให้บริการ</a></li>
+            <li class="active"><a href="<?= $reserve_step_3 ?>">เลือกจุดขึ้น-ลง และที่นั่ง</a></li>
         </ol>
     </div>
     <div class="panel-body">
         <?php if (!empty($_GET['van_id'])) { ?>
-            <?php $van_id = $_GET['van_id']; ?>
-            <?php $reserve_date = (empty($_GET['reserve_date']) ? date('d/m/Y') : $_GET['reserve_date']); ?>
+            <?php
+            require_once '../mysql_con/PDOMysql.php';
+            $pdo = new PDOMysql();
+            $pdo->conn = $pdo->open();
+            ?>
             <div class="form-group">
                 <div class="col-sm-12">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <div class="col-sm-5">
+                            <div class="col-sm-3">
                                 <div class="input-group">
                                     <input type="hidden" name="page" value="van_choose_detail" />
-                                    <input type="hidden" name="van_id" value="<?= $_GET['van_id'] ?>" />
-                                    <input type="hidden" name="go_start" value="<?= $_GET['go_start'] ?>" />
-                                    <input type="hidden" name="go_start_place" value="<?= $_GET['go_start_place'] ?>" />
-                                    <input type="hidden" name="go_end" value="<?= $_GET['go_end'] ?>" />
-                                    <input type="hidden" name="go_end_place" value="<?= $_GET['go_end_place'] ?>" />  
-
+                                    <input type="hidden" name="van_id" value="<?= $van_id ?>" />
+                                    <input type="hidden" name="go_start" value="<?= $province_start_id ?>" />
+                                    <input type="hidden" name="go_start_place" value="<?=$place_start_id  ?>" />
+                                    <input type="hidden" name="go_end" value="<?= $province_end_id ?>" />
+                                    <input type="hidden" name="go_end_place" value="<?= $place_end_id ?>" />  
+                                    <input type="hidden" name="van_time_id" id="van_time_id"/>  
+                                    <input type="hidden" name="van_time_start" id="van_time_start" value="<?= $van_time_start_time ?>"/>
 
                                     <span class="input-group-addon" for="date-fld">
                                         วันที่ต้องการใช้บริการ
@@ -31,19 +57,35 @@
                                     <input type="text" class="form-control" name="reserve_date" id="reserve_date" value="<?= $reserve_date ?>"/>                                    
                                 </div> 
                             </div>
-                            <div class="col-sm-3">
-                                <div class="input-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                                    <span class="input-group-addon" for="date-fld">
-                                        กรอกเวลา
-                                    </span>
-                                    <input type="text" class="form-control clockpicker" placeholder="h:m"  
-                                           required data-bv-notempty-message="กรุณากรอกเวลารถออก" name="van_drive_start" id="drive_start"/>
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-time"></span>
-                                    </span>
-                                </div>
+                            <div class="col-sm-7" id="box_van_time">                                
+                                <?php
+                                $sql_time = "SELECT * FROM van_time WHERE v_id =:van_id";
+                                $stmt_time = $pdo->conn->prepare($sql_time);
+                                $stmt_time->execute(array(':van_id' => $van_id));
+                                $timeArray = $stmt_time->fetchAll(PDO::FETCH_OBJ);
+                                foreach ($timeArray as $index => $time) {
+                                    ?>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"> 
+                                                <input type="radio" name="van_time_start" id="<?= $time->vt_id ?>"
+                                                       value="<?= $time->vt_drivestart ?>"  onclick="getRadioVanTimeValueToHiddenInput(this)"
+                                                       class="<?= $time->vt_driveend ?>" <?= ($index == 0 ? 'checked' : '') ?>
+                                                       <?= ($time->vt_drivestart == $van_time_start_time ? 'checked' : '' ) ?>/>     
+                                            </span>
+                                            <span class="input-group-addon">     
+                                                <span>รถออก</span>
+                                            </span>
+                                            <input type="text" class="form-control" value="<?= $time->vt_drivestart ?>">
+                                            <span class="input-group-addon">     
+                                                <span>ถึง</span>
+                                            </span>
+                                            <input type="text" class="form-control" value="<?= $time->vt_driveend ?>">
+                                        </div>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <span class="input-group-btn" for="date-fld">
                                     <button type="submit" class="btn btn-primary"> ค้นหาเที่ยวรถ</button>
                                 </span>
@@ -56,10 +98,7 @@
                 <div class="form-group">
                     <div class="col-sm-4">
                         <?php
-                        require_once '../mysql_con/PDOMysql.php';
-                        $pdo = new PDOMysql();
-                        $pdo->conn = $pdo->open();
-                        $sql = 'SELECT * FROM van v ';
+                        $sql = ' SELECT * FROM van v ';
                         $sql .= ' LEFT JOIN company c ON c.c_id = v.v_company';
                         $sql .= ' WHERE v_id =:v_id';
                         $stmt = $pdo->conn->prepare($sql);
@@ -159,8 +198,9 @@
     var objectPlace = {};
     $(document).ready(function () {
         var van_id = '<?= $van_id ?>';
-        setLoadVanChair(van_id);
+        initVanChair(van_id);
         initDatePicker();
+        getRadioVanTimeValueToHiddenInput($(':radio[name=van_time_start]'));
     });
     function initDatePicker() {
         //http://www.daterangepicker.com/#ex5
@@ -176,13 +216,12 @@
             //alert("You are " + years + " years old.");
         });
     }
-    function setLoadVanChair(van_id) {
+    function initVanChair(van_id) {
         var arrayChairs = [];
-        var arrayPlace = [];
         // Load Chairs
         $.get('../actionDb/van_chair.php?action=getChairsByVanId', {
-            id: van_id,
-            reserve_date: '<?= $reserve_date ?>'
+            van_id: van_id,
+            van_time_start: $('#van_time_start').val(),
         }, function (jsonChairs) {
             $.each(jsonChairs, function (index, objectChair) {
                 arrayChairs.push(objectChair);
@@ -197,14 +236,10 @@
                         if (chair_.vc_x == indexX && chair_.vc_y == indexY) {
                             //console.log('\n set chair_.v_status::==' + chair_.vc_cusid);
                             var element = '';
-                            if (chair_.rs_status === null) {
-                                element += '<label class="btn btn-primary btn-largn">';
-                                element += '<input type="checkbox" name="' + chair_.vc_label + '" value="' + chair_.vc_id + '" onClick="addChairInCart()"> ' + chair_.vc_label;
-                                element += '</label>';
-                                $(chair).replaceWith(element);
-                            } else {
-                                $(chair).replaceWith('<button type="button" class="btn btn-danger">จองแล้ว</button>');
-                            }
+                            element += '<span class="btn btn-primary btn-sm" id="' + chair_.vc_id + '">';
+                            element += '<input type="checkbox" name="' + chair_.vc_label + '" value="' + chair_.vc_id + '" onClick="addChairInCart()"> ' + chair_.vc_label;
+                            element += '</span>';
+                            $(chair).replaceWith(element);
                         }
                     });
                     if (indexX > 0) {
@@ -212,7 +247,40 @@
                     }
                 });
             });
+            setDisableChairsIsReserve();
         }, 'json');
+    }
+    function setDisableChairsIsReserve() {
+        var arrayChairs = Array();
+        $.get('../actionDb/reserve_chair.php?action=getChairsByReserveDate', {
+            reserve_date: $('#reserve_date').val(),
+        }, function (jsonChairs) {
+            $.each(jsonChairs, function (index, objectChair) {
+                arrayChairs.push(objectChair);
+            });
+            var chidrenChairs = parentChair.find('tr');
+            $.each(chidrenChairs, function (indexY, object) {
+                var chairs = $(object).find('span');
+                $.each(chairs, function (indexX, chair) {
+                    var value = $(chair).find('input').val();
+                    //console.log('\n indexX ::==' + indexX + ' indexY ::==' + indexY);
+                    $.each(arrayChairs, function (index, chair_) {
+                        if (value == chair_.vc_id) {
+                            console.log(' ************* จองแล้ว ************');
+                            $(chair).replaceWith('<button type="button" class="btn btn-danger btn-sm">จองแล้ว</button>');
+                        }
+                    });
+                });
+            });
+        }, 'json');
+    }
+    function getRadioVanTimeValueToHiddenInput(radio) {
+        if ($(radio).is(':checked')) {
+            var value = $(radio).attr('id');
+            $(':input[name=van_time_id]').val(value);
+        } else {
+            $(':input[name=van_time_id]').val('');
+        }
     }
     function addChairInCart() {
         var arrayChoose = getChairs();
@@ -261,6 +329,9 @@
         objectPlace.place_end_kilomate = place_end.attr('itemprop');
         objectPlace.place_default_begin = place_default_begin.text();
         objectPlace.place_default_end = place_default_end.text();
+        objectPlace.van_time_begin = $(':radio[name=van_time_start]').val();
+        objectPlace.van_time_end = $(':radio[name=van_time_start]').attr('class');
+        //console.log(objectPlace);
         /*
          *  cal price 
          */
@@ -271,11 +342,12 @@
 //        }
         placeDiffKilomate = objectPlace.place_end_kilomate - objectPlace.place_begin_kilomate;
         totalPrice = parseNegativeIntToPositiveInt(placeDiffKilomate) * priceKilomate;
+        //console.log('totalPrice ::==' + totalPrice);
         /*
          *  end cal price
          */
-        console.log('placeDiffKilomate ::==' + parseNegativeIntToPositiveInt(placeDiffKilomate));
-        console.log('print_properties_in_object ::==' + print_properties_in_object(objectPlace));
+        //console.log('placeDiffKilomate ::==' + parseNegativeIntToPositiveInt(placeDiffKilomate));
+        //console.log('print_properties_in_object ::==' + print_properties_in_object(objectPlace));
         return objectPlace;
     }
     function checkRoadInUserChoose(objectPlace) {
@@ -310,6 +382,8 @@
             $('#road_end').html('<h3><label class="label label-info">' + objectPlace.place_end_label + '</label></h3>');
             $('#chair').html('<h3><label class="label label-success">' + arrayChairLabel.toString() + '</label></h3>');
             $('#price').html('<h3><label class="label label-primary">' + (totalPrice * arrayChairLabel.length) + '</label></h3>');
+            $('#drive_time_begin').html('<h3><label class="label label-primary">' + objectPlace.van_time_begin + '</label></h3>');
+            $('#drive_time_end').html('<h3><label class="label label-primary">' + objectPlace.van_time_end + '</label></h3>');
         }
     }
     function saveReserveChairVan() {
@@ -322,10 +396,16 @@
                 'van_id': '<?= $result->v_id ?>',
                 'price': totalPrice,
                 'reserve_date': $('#reserve_date').val(),
+                'van_time_id': $('#van_time_id').val(),
             }, function (jsonReturn) {
                 if (jsonReturn.status) {
                     alert(jsonReturn.message);
                     redirectDelay(jsonReturn.url);
+                } else {
+                    alert('สถานะการเข้าใช้งานโปรแกรม ' + jsonReturn.message);
+                    if (jsonReturn.title == 'session_timeout') {
+                        redirectDelay(jsonReturn.url);
+                    }
                 }
             }, 'json');
             return false;
@@ -333,7 +413,7 @@
     }
     function findPlace(eleHierarchy, place_type) {
         var hierarchy = $(eleHierarchy).find('option').filter(":selected").attr('title');
-        console.log('hierarchy ::==' + hierarchy);
+        //console.log('hierarchy ::==' + hierarchy);
         if (hierarchy != '') {
             $.get('../actionDb/van_place.php?action=getPlacesByHierarchy', {
                 'van_id': <?= $_GET['van_id'] ?>,

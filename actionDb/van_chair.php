@@ -3,7 +3,7 @@
 require_once '../mysql_con/PDOMysql.php';
 $pdo = new PDOMysql();
 
-switch ($_GET['action']) {    
+switch ($_GET['action']) {
     case 'delete':
         try {
             $pdo->conn = $pdo->open();
@@ -24,37 +24,21 @@ switch ($_GET['action']) {
         $pdo->close();
         break;
     case 'getChairsByVanId':
-        $ban_id = $_GET['id'];
-        $reserve_date = (empty($_GET['reserve_date']) ? '' : $_GET['reserve_date']);
+        $van_id = $_GET['van_id'];
         // url test : http://localhost/van/actionDb/van_chair.php?action=getChairsByVanId&id=9
         try {
-            $value = array(
-                ':id' => $ban_id,
+            $values = array(
+                ':van_id' => $van_id,
             );
-            $pdo->conn = $pdo->open();
-            $sql = ' SELECT vc.*,';
-            $sql .= ' (SELECT r.rs_status FROM reserve r WHERE r.rs_id = rc.rs_id) as rs_status';
-            $sql .= ' FROM';
-            $sql .= ' van_chair vc';
-            $sql .= ' LEFT JOIN';
-            $sql .= ' reserve_chair rc ON rc.vc_id = vc.vc_id';
-            if (isset($reserve_date)) {
-                $sql .= ' AND rc.rsc_usabledate = STR_TO_DATE(:reserve_date,\'%d/%m/%Y\')';
-                $value['reserve_date'] = $reserve_date;
-            }
-            $sql .= ' ';
-
-//           $sql .= ' LEFT JOIN';
-//            $sql .= ' reserve r ON r.rs_id = rc.rs_id';
-//             if (!empty($reserve_date)) {
-//                $sql .= ' AND r.rs_usabledate = STR_TO_DATE(:reserve_date,\'%d/%m/%Y\')';
-//                $value['reserve_date'] = $reserve_date;
-//            }
-            $sql .= ' WHERE 1=1 ';
-            $sql .= ' AND vc.v_id =:id';
+            $sql = " SELECT * FROM van v";
+            $sql .= " LEFT JOIN van_chair vc ON vc.v_id = v.v_id";
+            $sql .= " WHERE 1=1";
+            $sql .= " AND v.v_id =:van_id";
             //echo 'sql ::==' . $sql;
+
+            $pdo->conn = $pdo->open();
             $stmt = $pdo->conn->prepare($sql);
-            $exe = $stmt->execute($value);
+            $exe = $stmt->execute($values);
             $result = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             echo json_encode($result);
@@ -64,6 +48,7 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
+    
     default:
         break;
 }

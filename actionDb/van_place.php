@@ -62,14 +62,14 @@ switch ($_GET['action']) {
         $pdo->close();
         break;
     case 'getPlacesByVanId':
-        $ban_id = $_GET['id'];
+        $van_id = $_GET['van_id'];
         // url test : http://localhost/van/actionDb/van_place.php?action=getPlacesByVanId&id=9
         try {
             $pdo->conn = $pdo->open();
             $sql = 'SELECT * FROM van_place WHERE v_id =:id ORDER BY vp_hierarchy ASC';
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute(array(
-                ':id' => $ban_id,
+                ':id' => $van_id,
             ));
             $result = $stmt->fetchAll(PDO::FETCH_OBJ);
 //            $response = array();

@@ -19,7 +19,8 @@
                         <div class="col-sm-8">
                             <input type="hidden" name="van_id" value="<?= $_GET['van_id'] ?>"/>
                             <input type="hidden" name="van_time_id"/>
-                            <select class="form-control" name="van_driver" id="v_driver"></select>
+                            <select class="form-control" name="van_driver" id="v_driver"
+                                    required data-bv-notempty-message="กรุณาเลือก พนักงานขับรถ"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,19 +77,19 @@
     });
     function initHtmlElement() {
         var combo_drive = $('#v_driver');
-        combo_drive.empty().append('<option value="" selected> -- โปรดเลือก --</option>');
+        combo_drive.empty().append('<option value=""> -- โปรดเลือก --</option>');
         $.get('../actionDb/person.php?action=getDriver', {}, function (response) {
             $.each(response, function (index, object) {
-                combo_drive.append('<option value="' + object.id + '" selected>' + object.fname + '   ' + object.lname + '</option>')
+                combo_drive.append('<option value="' + object.id + '">' + object.fname + '   ' + object.lname + '</option>')
             });
         }, 'json');
     }
     function setFormVanTime(van_time_id) {
-        $.get('../actionDb/van_time.php?action=getVanTimeById', {van_time_id: van_time_id}, function (response) {
-            $('#form_van_time').find('input[name=van_id]').val(response.v_id);
+        $.get('../actionDb/van_time.php?action=getVanTimeById', {van_time_id: van_time_id}, function (response) {            
+            $('#v_driver option').filter('[value="'+response.vt_driver+'"]').attr('selected', true)
             $('#form_van_time').find('input[name=van_time_id]').val(response.vt_id);
             $('#form_van_time').find('input[name=van_drive_start]').val(response.vt_drivestart);
             $('#form_van_time').find('input[name=van_drive_end]').val(response.vt_driveend);
         }, 'json');
-    }
+    }    
 </script>

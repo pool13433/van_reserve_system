@@ -233,7 +233,7 @@ if (!empty($_GET['van_id'])) {
 
         //select2.on
         if ($('#van_id').val() !== '') {
-            setLoadVanForm();
+            initLoadVanForm();
         }
 
         //$('#v_chair').val(0);
@@ -396,13 +396,13 @@ if (!empty($_GET['van_id'])) {
             });
         });
     }
-    function setLoadVanForm() {
+    function initLoadVanForm() {
         var arrayChairs = [];
         var arrayPlace = [];
         var id = $('#van_id').val();
         // Load Chairs
         $.get('../actionDb/van_chair.php?action=getChairsByVanId', {
-            id: id
+            van_id: id
         }, function (jsonChairs) {
             $.each(jsonChairs, function (index, objectChair) {
                 arrayChairs.push(objectChair);
@@ -428,7 +428,7 @@ if (!empty($_GET['van_id'])) {
 
         //Load Place
         $.get('../actionDb/van_place.php?action=getPlacesByVanId', {
-            id: id
+            van_id: id
         }, function (jsonChairs) {
             $.each(jsonChairs, function (index, objectChair) {
                 arrayPlace.push(objectChair.pvp_id.toString());

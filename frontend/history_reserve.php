@@ -3,6 +3,8 @@ if (!isset($_SESSION)) {
     session_start();
 }
 $authen = (empty($_SESSION['person']) ? '' : $_SESSION['person']);
+require_once '../filecenter/check_session_timeout.php';
+
 include '../mysql_con/PDOMysql.php';
 ?>
 <div class="panel panel-primary">
@@ -34,15 +36,22 @@ include '../mysql_con/PDOMysql.php';
                 /*
                  * query sql
                  */
-                $sql = ' SELECT r.*,v.*,vt.*, ';
-                $sql .= ' DATE_FORMAT(rs_createdate,\'%d-%m-%Y %h:%i\') as reserve_date,';
-                $sql .= ' (SELECT pvp_name FROM province_place pvp JOIN van_place vp ON vp.pvp_id = pvp.pvp_id WHERE vp.vp_id = r.vp_idstart) as place_begin,';
-                $sql .= ' (SELECT pvp_name FROM province_place pvp JOIN van_place vp ON vp.pvp_id = pvp.pvp_id WHERE vp.vp_id = r.vp_idend) as place_end';
-                $sql .= ' FROM reserve r';
-                $sql .= ' LEFT JOIN van v ON v.v_id = r.v_id';
-                $sql .= ' LEFT JOIN van_time vt ON vt.v_id = v.v_id';
-                $sql .= ' WHERE r.cus_id =:authen_id';
-                $sql .= ' ORDER BY rs_createdate DESC';
+                $sql = " SELECT  `rs_id`,";
+                $sql .= " (SELECT CONCAT(fname, ' ', lname) FROM person p WHERE p.id = r.cus_id) customer_name,";
+                $sql .= " v.v_id,`rs_price`,";
+                $sql .= " DATE_FORMAT(`rs_usabledate`,'%d-%m-%Y') usableddate,";
+                $sql .= " (SELECT pvp_name FROM province_place pvp WHERE pvp.pvp_id = r.vp_idstart) place_begin_name,";
+                $sql .= " (SELECT pvp_name FROM province_place pvp WHERE pvp.pvp_id = r.vp_idend) place_end_name,";
+                $sql .= " vt.vt_id,";
+                $sql .= " DATE_FORMAT(`rs_createdate`,'%d-%m-%Y') reserve_date,";
+                $sql .= " `rs_updateby`,`rs_status`,";
+                $sql .= " `v_name`,`v_detail`,`v_company`,`v_chair`,`v_roadlength`,";
+                $sql .= " `v_updatedate`,`v_updateby`,vt.vt_id,`vt_drivestart`,`vt_driveend`,";
+                $sql .= " `vt_driver`,`vt_updatedate`";
+                $sql .= " FROM reserve r";
+                $sql .= " LEFT JOIN van v ON v.v_id = r.v_id";
+                $sql .= " LEFT JOIN van_time vt ON vt.vt_id = r.vt_id";
+                $sql .= " WHERE r.cus_id =:authen_id";
                 /*
                  * query sql
                  */
@@ -56,8 +65,8 @@ include '../mysql_con/PDOMysql.php';
                         <td style="width: 5%;"><?= ($key + 1) ?></td>                                                                            
                         <td nowrap><?= $value->v_name ?></td>                        
                         <td nowrap><?= $value->reserve_date ?></td>
-                        <td><?= $value->place_begin ?></td>
-                        <td><?= $value->place_end ?></td>
+                        <td><?= $value->place_begin_name ?></td>
+                        <td><?= $value->place_end_name ?></td>
                         <td><?= $value->vt_drivestart ?></td>
                         <td><?= $value->vt_driveend ?></td>
                         <td><?= $value->rs_price ?></td>
@@ -66,16 +75,6 @@ include '../mysql_con/PDOMysql.php';
                                 <?= getDataListByKey($value->rs_status, arrayReserveStatus(), 'NAME') ?>
                             </span>                            
                         </td>
-                        <!--<td style="width: 8%;">
-                            <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="cancleReserve(<?= $value->rs_id ?>)">
-                                <i class="glyphicon glyphicon-remove"></i> ยกเลิกการจอง      
-                            </a>                            
-                        </td>
-                        <td style="width: 8%;">
-                            <a href="#" class="btn btn-primary btn-sm" onclick="printInvoiceByCase(<?= $value->rs_id ?>)">
-                                <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงิน      
-                            </a>                            
-                        </td>-->
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -96,7 +95,7 @@ include '../mysql_con/PDOMysql.php';
                                         </a>   
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript:void(0)" onclick="editReserve(<?= $value->rs_id ?>)">
                                             <i class="glyphicon glyphicon-pencil"></i> แก้ไข
                                         </a>
                                     </li>
@@ -133,5 +132,14 @@ include '../mysql_con/PDOMysql.php';
             }, 'json');
             return false;
         }
+    }
+    function editReserve(reserve_id){
+        $.get('../actionDb/reserve.php?action=setSessionEditReserve',{reserve_id:reserve_id},function(response){
+            if(response.status){
+                redirectDelay(response.url,1);
+            }else{
+                alert(response.message);
+            }
+        },'json');
     }
 </script>

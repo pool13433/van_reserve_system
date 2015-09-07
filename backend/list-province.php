@@ -33,12 +33,12 @@
                         <td style="width: 8%;"><?= ($key + 1) ?></td>                                                    
                         <td><?= $value->pv_name ?></td>
                         <td style="width: 8%;">
-                            <a href="index.php?page=form-province&id=<?= $value->pv_id ?>" class="btn btn-warning">
+                            <a href="index.php?page=form-province&id=<?= $value->pv_id ?>" class="btn btn-warning btn-sm">
                                 <i class="glyphicon glyphicon-pencil"></i>แก้ไข
                             </a>
                         </td>
                         <td style="width: 8%;">
-                            <button type="button" class="btn btn-danger" onclick="delete_data(<?= $value->pv_id ?>, '../actionDb/province.php?action=delete')">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="delete_data(<?= $value->pv_id ?>, '../actionDb/province.php?action=delete')">
                                 <i class="glyphicon glyphicon-trash"></i>ลบ
                             </button>
                         </td>

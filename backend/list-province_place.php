@@ -39,12 +39,12 @@
                         <td><?= $value->pvp_name ?></td>
                         <td><?= $value->pv_name ?></td>
                         <td style="width: 8%;">
-                            <a href="index.php?page=form-province_place&id=<?= $value->pvp_id ?>" class="btn btn-warning">
+                            <a href="index.php?page=form-province_place&id=<?= $value->pvp_id ?>" class="btn btn-warning btn-sm">
                                 <i class="glyphicon glyphicon-pencil"></i>แก้ไข
                             </a>
                         </td>
                         <td style="width: 8%;">
-                            <button type="button" class="btn btn-danger" onclick="delete_data(<?= $value->pvp_id ?>, '../actionDb/province_place.php?action=delete')">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="delete_data(<?= $value->pvp_id ?>, '../actionDb/province_place.php?action=delete')">
                                 <i class="glyphicon glyphicon-trash"></i>ลบ
                             </button>
                         </td>

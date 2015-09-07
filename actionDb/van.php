@@ -104,6 +104,9 @@ switch ($_GET['action']) {
                             ':van_id' => $van_id,
                         ));
                     }
+                }else{
+                    echo 'count($arrayChairs) length ::=='.count($arrayChairs);
+                    exit();
                 }
             }
 

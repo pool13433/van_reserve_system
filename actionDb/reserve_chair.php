@@ -4,7 +4,7 @@ session_start();
 require_once '../actionDb/variableGlobal.php';
 require_once '../mysql_con/PDOMysql.php';
 $pdo = new PDOMysql();
-$authen = $_SESSION['person'];
+$authen = (empty($_SESSION['person']) ? [] : $_SESSION['person']);
 switch ($_GET['action']) {
     case 'create':
         $exe = true;
@@ -45,9 +45,9 @@ switch ($_GET['action']) {
             }
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute($values);
-            $reserve_id = $pdo->getLastInsertId();            
+            $reserve_id = $pdo->getLastInsertId();
             if ($exe) {
-                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=van_complete&reserve_id='.$reserve_id);
+                echo $pdo->returnJson(true, 'บันทึกสำเร็จ', 'บันทึกสำเร็จ', './index.php?page=van_complete&reserve_id=' . $reserve_id);
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'บันทึก ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }
@@ -76,7 +76,31 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
+    case 'getChairsByReserveDate':
+        $reserve_date = $_GET['reserve_date'];
+        // url test : http://localhost/van/actionDb/van_chair.php?action=getChairsByVanId&id=9
+        try {
+            $values = array(
+                ':reserve_date' => $reserve_date,
+            );
+            $sql = " SELECT * FROM reserve rs";
+            $sql .= " LEFT JOIN reserve_chair rsc ON rsc.rs_id = rs.rs_id ";
+            $sql .= " LEFT JOIN van_chair vc ON vc.vc_id = rsc.vc_id";
+            $sql .= " WHERE rs.rs_usabledate = STR_TO_DATE(:reserve_date, '%d/%m/%Y')";
 
+            //echo 'sql ::=='.$sql;
+            $pdo->conn = $pdo->open();
+            $stmt = $pdo->conn->prepare($sql);
+            $exe = $stmt->execute($values);
+            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            echo json_encode($result);
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
     default:
         break;
 }

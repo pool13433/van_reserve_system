@@ -1,6 +1,8 @@
 <?php
 
 define('APPLICATION_NAME', 'ระบบจองรถตู้ออนไลน์');
+define('SESSION_TIMEOUT', 'session_timeout');
+define('SESSION_TIMEOUT_MESSAGE', 'หมดเวลาการเชื่อมต่อ กรุณา เข้าระบบใหม่อีกครั้ง');
 
 define('EMPLOYEE_ID', 1);
 define('ONWER_ID', 2);

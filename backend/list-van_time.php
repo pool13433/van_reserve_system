@@ -10,7 +10,7 @@ if (empty($_GET['van_id'])) {
     <div class="panel panel-primary">
         <div class="panel-heading clearfix">
             <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-                <i class="glyphicon glyphicon-list-alt"></i> รายการแสดงข้อมูลรถตู้ทั้งหมด
+                <i class="glyphicon glyphicon-list-alt"></i> รายการแสดงข้อมูล เวลาการเดินทางของรถตู้
             </h4>
             <div class="btn-group pull-right">
                 <a href="index.php?page=list-van" class="btn btn-info">
