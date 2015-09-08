@@ -38,14 +38,14 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
             ?>
             <div class="form-group">
                 <div class="col-sm-12">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" id="form_reserve">
                         <div class="form-group">
                             <div class="col-sm-3">
                                 <div class="input-group">
                                     <input type="hidden" name="page" value="van_choose_detail" />
                                     <input type="hidden" name="van_id" value="<?= $van_id ?>" />
                                     <input type="hidden" name="go_start" value="<?= $province_start_id ?>" />
-                                    <input type="hidden" name="go_start_place" value="<?=$place_start_id  ?>" />
+                                    <input type="hidden" name="go_start_place" value="<?= $place_start_id ?>" />
                                     <input type="hidden" name="go_end" value="<?= $province_end_id ?>" />
                                     <input type="hidden" name="go_end_place" value="<?= $place_end_id ?>" />  
                                     <input type="hidden" name="van_time_id" id="van_time_id"/>  
@@ -70,7 +70,7 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
                                             <span class="input-group-addon"> 
                                                 <input type="radio" name="van_time_start" id="<?= $time->vt_id ?>"
                                                        value="<?= $time->vt_drivestart ?>"  onclick="getRadioVanTimeValueToHiddenInput(this)"
-                                                       class="<?= $time->vt_driveend ?>" <?= ($index == 0 ? 'checked' : '') ?>
+                                                       class="<?= $time->vt_driveend ?>"
                                                        <?= ($time->vt_drivestart == $van_time_start_time ? 'checked' : '' ) ?>/>     
                                             </span>
                                             <span class="input-group-addon">     
@@ -94,7 +94,7 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
                     </form>
                 </div>
             </div>
-            <div class="form-horizontal">
+            <div class="form-horizontal" id="box_reserve_detail" style="display: none">
                 <div class="form-group">
                     <div class="col-sm-4">
                         <?php
@@ -129,22 +129,22 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
                                 </tr>
                                 <?php
                                 $sql = 'SELECT vp.vp_id,vp.vp_kilomate,pvp.pvp_name,vp.vp_hierarchy,';
-                                $sql .= ' (SELECT vs_value FROM van_setting) as price';
+                                $sql .= ' (SELECT vs_value FROM van_setting) as price,pvp.pvp_id';
                                 $sql .= ' FROM van_place vp ';
                                 $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
                                 $sql .= ' WHERE vp.v_id =:van_id';
                                 $sql .= ' ORDER BY vp.vp_hierarchy ASC';
-                                $stmt = $pdo->conn->prepare($sql);
-                                //echo '<pre> sql ::=='.$sql.'</pre>';
-                                $stmt->execute(array(':van_id' => $van_id));
-                                $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+                                $stmt_place = $pdo->conn->prepare($sql);
+                                echo '<pre> sql ::=='.$sql.'</pre>';
+                                $stmt_place->execute(array(':van_id' => $van_id));
+                                $results = $stmt_place->fetchAll(PDO::FETCH_OBJ);
                                 ?>
                                 <tr>
                                     <td>จุดขึ้นรถ</td>
                                     <td>                                        
                                         <select class="form-control" name="place_begin" id="place_begin" onchange="findPlace(this, '<?= PLACE_BEGIN ?>')">
                                             <?php foreach ($results as $index => $place) { ?>
-                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" 
+                                                <option value="<?= $place->pvp_id ?>" class="<?= $place->price ?>" 
                                                         itemprop="<?= $place->vp_kilomate ?>" title="<?= $place->vp_hierarchy ?>">
                                                             <?= $place->pvp_name ?>
                                                 </option>
@@ -157,7 +157,7 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
                                     <td>
                                         <select class="form-control" name="place_end" id="place_end" onchange="findPlace(this, '<?= PLACE_END ?>')">
                                             <?php foreach ($results as $index => $place) { ?>
-                                                <option value="<?= $place->vp_id ?>" class="<?= $place->price ?>" 
+                                                <option value="<?= $place->pvp_id ?>" class="<?= $place->price ?>" 
                                                         itemprop="<?= $place->vp_kilomate ?>" title="<?= $place->vp_hierarchy ?>">
                                                             <?= $place->pvp_name ?>
                                                 </option>
@@ -278,9 +278,14 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
         if ($(radio).is(':checked')) {
             var value = $(radio).attr('id');
             $(':input[name=van_time_id]').val(value);
+            /*
+             * handleFormSubmit()
+             */
+            $('#box_reserve_detail').show();
         } else {
             $(':input[name=van_time_id]').val('');
         }
+
     }
     function addChairInCart() {
         var arrayChoose = getChairs();
@@ -428,7 +433,7 @@ if (!empty($_GET['cmd']) && $_GET['cmd'] == 'edit') {
                 }
                 eleCombo.empty();
                 $.each(jsonPlace, function (index, place) {
-                    eleCombo.append('<option value="' + place.vp_id + '" class="' + place.price + '" itemprop="' + place.vp_kilomate + '" title="' + place.vp_hierarchy + '">' + place.pvp_name + '</option>');
+                    eleCombo.append('<option value="' + place.pvp_id + '" class="' + place.price + '" itemprop="' + place.vp_kilomate + '" title="' + place.vp_hierarchy + '">' + place.pvp_name + '</option>');
                 });
                 var optionLength = eleCombo.find('option').length;
                 if (optionLength === 0) {

@@ -93,7 +93,7 @@ switch ($_GET['action']) {
         try {
             $pdo->conn = $pdo->open();
             $sql = 'SELECT vp.vp_id,vp.vp_kilomate,pvp.pvp_name,vp.vp_hierarchy,';
-            $sql .= ' (SELECT vs_value FROM van_setting) as price';
+            $sql .= ' (SELECT vs_value FROM van_setting) as price,pvp.pvp_id';
             $sql .= ' FROM van_place vp ';
             $sql .= ' LEFT JOIN province_place pvp ON pvp.pvp_id = vp.pvp_id ';
             $sql .= ' WHERE vp.v_id =:van_id';

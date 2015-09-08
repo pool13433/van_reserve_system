@@ -38,15 +38,16 @@ switch ($_GET['action']) {
                 ':status' => RS_RESERVE_SUCCESS,
                 ':reserve_date' => $reserve_date,
                 ':van_time_id' => $van_time_id,
+                ':reserve_code' => $pdo->createReserveVanCode(),
             );
             if (empty($_POST['id'])) {
                 $sql = ' INSERT INTO `reserve`(';
                 $sql .=' `cus_id`, `v_id`, `rs_price`,';
                 $sql .=' `vp_idstart`, `vp_idend`, `rs_createdate`, ';
-                $sql .=' `rs_updateby`,rs_status,rs_usabledate,vt_id) VALUES (';
+                $sql .=' `rs_updateby`,rs_status,rs_usabledate,vt_id,rs_code) VALUES (';
                 $sql .=' :cus_id,:van_id,:price,';
                 $sql .=' :place_begin,:place_end,NOW(),';
-                $sql .=' :by,:status,STR_TO_DATE(:reserve_date,\'%d/%m/%Y\'),:van_time_id)';
+                $sql .=' :by,:status,STR_TO_DATE(:reserve_date,\'%d/%m/%Y\'),:van_time_id,:reserve_code)';
                 $sql .= ' ';
                 //STR_TO_DATE('06/06/2015', '%d/%m/%Y')
             } else {
@@ -128,11 +129,13 @@ switch ($_GET['action']) {
             $reserve_id = $_GET['reserve_id'];
             $pdo->conn = $pdo->open();
             $sql = 'SELECT ';
-            $sql .= ' `rs_id`, `cus_id`, `v_id`, `rs_price`, `rs_usabledate`, ';
-            $sql .= ' `vp_idstart`, `vp_idend`, `vt_id`, `rs_createdate`, `rs_updateby`, `rs_status`,';
+            $sql .= ' `rs_id`, `cus_id`, r.v_id, `rs_price`, `rs_usabledate`, ';
+            $sql .= ' `vp_idstart`, `vp_idend`, `rs_createdate`, `rs_updateby`, `rs_status`,';
             $sql .= ' (SELECT pv.pv_id FROM province pv,province_place pvp WHERE pv.pv_id = pvp.pv_id AND pvp.pvp_id = r.vp_idstart) province_start_id,';
-            $sql .= ' (SELECT pv.pv_id FROM province pv,province_place pvp WHERE pv.pv_id = pvp.pv_id AND pvp.pvp_id = r.vp_idstart) province_end_id';
+            $sql .= ' (SELECT pv.pv_id FROM province pv,province_place pvp WHERE pv.pv_id = pvp.pv_id AND pvp.pvp_id = r.vp_idstart) province_end_id,';
+            $sql .= ' vt.vt_id,vt.vt_drivestart,vt.vt_driveend';
             $sql .= ' FROM reserve r';
+            $sql .= ' LEFT JOIN van_time vt ON vt.vt_id = r.vt_id';
             $sql .= ' WHERE rs_id =:reserve_id';
             $stmt = $pdo->conn->prepare($sql);
             $exe = $stmt->execute(array(
@@ -146,13 +149,15 @@ switch ($_GET['action']) {
                 $province_end_id = $reserve->province_end_id;
                 $place_start_id = $reserve->vp_idstart;
                 $place_end_id = $reserve->vp_idstart;
+                $vt_drivestart = $reserve->vt_drivestart;
                 
                 $url_reserve_edit = './index.php?cmd=edit&page=van_choose_detail';
                 $url_reserve_edit .= '&van_id='.$van_id.'&go_start='.$province_start_id;
-                $url_reserve_edit .= ' &go_start_place='.$place_start_id.'&go_end='.$province_end_id.'&go_end_place='.$place_end_id;
+                $url_reserve_edit .= ' &go_start_place='.$place_start_id.'&go_end='.$province_end_id;
+                $url_reserve_edit .= ' &go_end_place='.$place_end_id.'&van_time_start='.$vt_drivestart;
                 echo $pdo->returnJson(true, 'ยกเลิกการจองเรียบร้อย', 'ยกเลิกสำเร็จ', $url_reserve_edit);
             } else {
-                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ยกเลิก ไม่สำเร็จ [ ' . $sql . ' ]', '');
+                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ไปหน้าแก้ไข ไม่สำเร็จ [ ' . $sql . ' ]', '');
             }
         } catch (Exception $e) {
             print "Error!: " . $e->getMessage() . "<br/>";

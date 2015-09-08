@@ -18,6 +18,7 @@ include '../mysql_con/PDOMysql.php';
             <thead>
                 <tr>
                     <th>ลำดับ</th>
+                    <th>รหัสการจอง</th>
                     <th>ชื่อเส้นทาง</th>
                     <th>วันที่จอง</th>
                     <th>จุดขึ้น</th>
@@ -36,7 +37,7 @@ include '../mysql_con/PDOMysql.php';
                 /*
                  * query sql
                  */
-                $sql = " SELECT  `rs_id`,";
+                $sql = " SELECT  `rs_id`,rs_code,";
                 $sql .= " (SELECT CONCAT(fname, ' ', lname) FROM person p WHERE p.id = r.cus_id) customer_name,";
                 $sql .= " v.v_id,`rs_price`,";
                 $sql .= " DATE_FORMAT(`rs_usabledate`,'%d-%m-%Y') usableddate,";
@@ -63,6 +64,7 @@ include '../mysql_con/PDOMysql.php';
                 <?php foreach ($result as $key => $value) { ?>
                     <tr>
                         <td style="width: 5%;"><?= ($key + 1) ?></td>                                                                            
+                        <td nowrap><?= $value->rs_code ?></td>                 
                         <td nowrap><?= $value->v_name ?></td>                        
                         <td nowrap><?= $value->reserve_date ?></td>
                         <td><?= $value->place_begin_name ?></td>

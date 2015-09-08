@@ -98,6 +98,25 @@ class PDOMysql {
         return $prefix . $year_ad . $newrunnumber;
     }
 
+    public function createReserveVanCode() {
+        $pdo = new PDOMysql();
+        $pdo->conn = $pdo->open();
+
+        $sql = " SELECT LEFT(rs_code,3) rs_prefix, ";
+        $sql .= " LPAD(CONVERT(RIGHT(`rs_code`, 7),UNSIGNED INTEGER)+1,7,0) rs_number";
+        $sql .= " FROM reserve";
+        $sql .= " ORDER BY RIGHT(rs_code,7) DESC";
+        $sql .= " LIMIT 0,1";
+
+        $stmt = $pdo->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+
+        $prefix = $result->rs_prefix;
+        $new_number = $result->rs_number;
+        return $prefix . $new_number;
+    }
+
     function getPriceInKilomate() {
         $pdo = new PDOMysql();
         $pdo->conn = $pdo->open();
