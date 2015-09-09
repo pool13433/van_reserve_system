@@ -70,11 +70,6 @@ $authen = $_SESSION['person'];
                                 <a href="index.php?page=list-van">จัดการ=> จัดรถตู้</a>
                             </td>
                         </tr> 
-                        <tr>
-                            <td onclick="setAccordion(this)">
-                                <a href="index.php?page=form-van_place">จัดการ=> ระยะทางสถานที่ขึ้น-ลงของรถตู้</a>
-                            </td>
-                        </tr>  
                     </table>
                 </div>
             </div>

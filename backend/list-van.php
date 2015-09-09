@@ -18,9 +18,7 @@
                     <th>ชื่อสายเดินรถ</th>
                     <th>บริษัท</th>
                     <th>ระยะทาง</th>
-                    <th>จัดการเวลาการเดินทาง</th>
-                    <th>แก้ไข</th>
-                    <th>ลบ</th>
+                    <th>#</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +26,7 @@
                 $pdo = new PDOMysql();
                 $pdo->conn = $pdo->open();
                 $sql = 'SELECT ';
-                $sql .= " v.v_id, `v_name`, `v_detail`, `v_company`,`v_chair`, `v_roadlength`, `v_updatedate`, `v_updateby`";                
+                $sql .= " v.v_id, `v_name`, `v_detail`, `v_company`,`v_chair`, `v_roadlength`, `v_updatedate`, `v_updateby`";
                 $sql .= " ,`c_id`, `c_name`, `c_onwer`, `c_address`, `c_mobile`, `c_updatedate`, `c_updateby` ";
                 $sql .= '  FROM van v';
                 $sql .= ' LEFT JOIN company c ON c.c_id = v.v_company ';
@@ -43,22 +41,36 @@
                         <td><?= $value->v_name ?></td>
                         <td><?= $value->c_name ?></td>
                         <td><?= $value->v_roadlength ?></td>
-                        <td style="width: 8%;">
-                            <a href="index.php?page=list-van_time&van_id=<?= $value->v_id ?>" 
-                               class="btn btn-info btn-sm">
-                                <i class="glyphicon glyphicon-time"></i> จัดการเวลากาเดินรถ
-                            </a>
-                        </td>
-                        <td style="width: 8%;">
-                            <a href="index.php?page=form-van&van_id=<?= $value->v_id ?>" class="btn btn-warning btn-sm">
-                                <i class="glyphicon glyphicon-pencil"></i>แก้ไข
-                            </a>
-                        </td>
-                        <td style="width: 8%;">
-                            <button type="button" class="btn btn-danger btn-sm" 
-                                    onclick="delete_data(<?= $value->v_id ?>, '../actionDb/van.php?action=delete')">
-                                <i class="glyphicon glyphicon-trash"></i>ลบ
-                            </button>
+                        <td style="width: 10%">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" 
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    เมนูจัดการ <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="index.php?page=form-van_place&van_place=<?= $value->v_id ?>">
+                                            <i class="glyphicon glyphicon-blackboard"></i> จัดการสถานที่ขึ้น-ลง
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="index.php?page=list-van_time&van_id=<?= $value->v_id ?>">
+                                            <i class="glyphicon glyphicon-time"></i> จัดการเวลากาเดินรถ
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="index.php?page=form-van&van_id=<?= $value->v_id ?>">
+                                            <i class="glyphicon glyphicon-pencil"></i>แก้ไข
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a type="button" 
+                                           onclick="delete_data(<?= $value->v_id ?>, '../actionDb/van.php?action=delete')">
+                                            <i class="glyphicon glyphicon-trash"></i> ลบ
+                                        </a>
+                                    </li>                                    
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 <?php } ?>

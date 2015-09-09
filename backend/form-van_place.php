@@ -9,48 +9,13 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
             <i class="glyphicon glyphicon-list-alt"></i> ฟอร์มจัดการระยะทางแต่ละจุดขึ้น-ลง
         </h4>
-        <!--        <div class="btn-group pull-right">
-                    <a href="index.php?page=list-province_place" class="btn btn-info">
-                        <i class="glyphicon glyphicon-arrow-left"></i> ย้อนกลับ
-                    </a>
-                </div>-->
+        <div class="btn-group pull-right">
+            <a href="index.php?page=list-van" class="btn btn-info">
+                <i class="glyphicon glyphicon-arrow-left"></i> ย้อนกลับ
+            </a>
+        </div>
     </div>
     <div class="panel-body">    
-        <div class="form-group">
-            <form class="form-horizontal" action="index.php" method="get">
-                <input type="hidden" name="page" value="form-van_place"/>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label class="input-group-btn" for="date-fld">
-                            <span class="btn btn-default">
-                                สายรถตู้
-                            </span>
-                        </label>
-                        <?php
-                        $sql = 'SELECT * FROM van ';
-                        $sql .= ' ORDER BY v_id ASC';
-                        $stmt = $pdo->conn->prepare($sql);
-                        $stmt->execute();
-                        $van_places = $stmt->fetchAll(PDO::FETCH_OBJ);
-                        ?>
-                        <select class="form-control" name="van_place" id="van_place">
-                            <?php foreach ($van_places as $index => $place) { ?>
-                                <?php if ($van_place == $place->v_id) { ?>
-                                    <option value="<?= $place->v_id ?>" selected><?= $place->v_name ?></option>
-                                <?php } else { ?>
-                                    <option value="<?= $place->v_id ?>"><?= $place->v_name ?></option>
-                                <?php } ?>
-                            <?php } ?>
-                        </select>
-                        <label class="input-group-btn" for="date-fld">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="glyphicon glyphicon-search"></i> ดูเส้นทาง
-                            </button>
-                        </label>
-                    </div>                    
-                </div>   
-            </form>
-        </div>
         <div class="form-group">
             <table class="table table-bordered table-striped">
                 <thead>
@@ -115,7 +80,7 @@ $van_place = (empty($_GET['van_place'])) ? '' : $_GET['van_place'];
         var children_length = tableBody.children().length;
         console.log('children_length ::==' + children_length);
         if (children_length > 0) {
-            tableBody.find('tr:eq(0)').first().find('td:eq(3)').find('input').attr('disabled',true); // disable input
+            tableBody.find('tr:eq(0)').first().find('td:eq(3)').find('input').attr('disabled', true); // disable input
         }
     });
     function changHierarchy(index, type, id) {
