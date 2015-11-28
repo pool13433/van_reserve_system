@@ -1,22 +1,10 @@
-<style>
-    /*    .modal{
-            display: block !important;
-        }
-        .modal-dialog{
-            overflow-y: initial !important
-        }
-        .modal-body{
-            height: 450px;
-            overflow-y: auto;
-        }*/
-</style>
 <form class="form-horizontal" id="form_register" name="form_register" 
       data-bv-message="This value is not valid"
       data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
       data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
       data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
     <!-- Modal -->
-    <div class="modal fade" id="dialog_register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

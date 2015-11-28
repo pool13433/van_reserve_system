@@ -43,6 +43,26 @@ if (!empty($_GET['id'])) {
     $updateby = $result->updateby;
     $status = $result->status;
 }
+$form_title = '';
+if (!empty($_GET['status'])) {
+    switch (intval($_GET['status'])) {
+         case 0:
+            $form_title = 'จัดการผู้ใช้งานทั่วไป';
+            break;
+        case 1:
+            $form_title = 'จัดการเจ้าหน้าที่ดูแลระบบ';
+            break;
+        case 2:
+            $form_title = 'จัดการเจ้าของวินรถตู้';
+            break;
+        case 3:
+            $form_title = 'จัดการลูกค้า';
+            break;
+        case 4:
+            $form_title = ' จัดการพนักงานขับรถ';
+            break;
+    }
+}
 ?>
 
 <form class="form-horizontal" id="form_person"
@@ -53,10 +73,10 @@ if (!empty($_GET['id'])) {
     <div class="panel panel-primary">
         <div class="panel-heading clearfix">
             <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-                <i class="glyphicon glyphicon-list-alt"></i> ฟอร์มจัดการพนักงานขับรถ
+                <i class="glyphicon glyphicon-list-alt"></i> <strong> ฟอร์ม <?=$form_title?></strong>
             </h4>
             <div class="btn-group pull-right">
-                <a href="index.php?page=list-person&status=<?=$status?>" class="btn btn-info">
+                <a href="index.php?page=list-person&status=<?= $status ?>" class="btn btn-info">
                     <i class="glyphicon glyphicon-arrow-left"></i> ย้อนกลับ
                 </a>
             </div>
