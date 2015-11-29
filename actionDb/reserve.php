@@ -124,6 +124,8 @@ switch ($_GET['action']) {
         $pdo->close();
         break;
 
+    
+
     case 'setSessionEditReserve':
         try {
             $reserve_id = $_GET['reserve_id'];
@@ -150,11 +152,11 @@ switch ($_GET['action']) {
                 $place_start_id = $reserve->vp_idstart;
                 $place_end_id = $reserve->vp_idstart;
                 $vt_drivestart = $reserve->vt_drivestart;
-                
+
                 $url_reserve_edit = './index.php?cmd=edit&page=van_choose_detail';
-                $url_reserve_edit .= '&van_id='.$van_id.'&go_start='.$province_start_id;
-                $url_reserve_edit .= ' &go_start_place='.$place_start_id.'&go_end='.$province_end_id;
-                $url_reserve_edit .= ' &go_end_place='.$place_end_id.'&van_time_start='.$vt_drivestart;
+                $url_reserve_edit .= '&van_id=' . $van_id . '&go_start=' . $province_start_id;
+                $url_reserve_edit .= ' &go_start_place=' . $place_start_id . '&go_end=' . $province_end_id;
+                $url_reserve_edit .= ' &go_end_place=' . $place_end_id . '&van_time_start=' . $vt_drivestart;
                 echo $pdo->returnJson(true, 'ยกเลิกการจองเรียบร้อย', 'ยกเลิกสำเร็จ', $url_reserve_edit);
             } else {
                 echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'ไปหน้าแก้ไข ไม่สำเร็จ [ ' . $sql . ' ]', '');

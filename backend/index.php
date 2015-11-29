@@ -15,10 +15,13 @@
         if (empty($_SESSION)) {
             session_start();
         }
+        if (empty($_SESSION['person'])) {
+            echo '<meta http-equiv="refresh" content="0; url=http://localhost/van" />';
+        }
         ?>
         <div class="container-fluid" style="margin-top: 100px;">
             <div class="row clearfix">
-                    <?php include '../filecenter/menu-header.php'; ?> 
+                <?php include '../filecenter/menu-header.php'; ?> 
                 <div class="col-md-3 column">
                     <?php include '../filecenter/menu-left.php'; ?>
                 </div>
@@ -43,7 +46,7 @@
 
                 </div>
             </div>
-<?php include '../filecenter/footer.php'; ?>
+            <?php include '../filecenter/footer.php'; ?>
         </div>
     </body>
 </html>

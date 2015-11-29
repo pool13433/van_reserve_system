@@ -119,6 +119,62 @@ switch ($_GET['action']) {
         }
         $pdo->close();
         break;
+    case 'changeProfile':
+        $person_id = $_POST['id'];
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname'];
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $idcard = $_POST['idcard'];
+        $mobile = $_POST['mobile'];
+        $email = $_POST['email'];
+        $address = $_POST['address'];
+        $status = CUSTOMER_ID;
+        try {
+            $pdo->conn = $pdo->open();
+            $values = array(
+                ':fname' => $fname,
+                ':lname' => $lname,
+                ':username' => $username,
+                ':password' => $password,
+                ':idcard' => $idcard,
+                ':mobile' => $mobile,
+                ':email' => $email,
+                'address' => $address,
+                ':by' => 1,
+                ':person_id' => $person_id
+            );
+
+            $sql = '  UPDATE `person` SET ';
+            $sql .= ' `fname`=:fname,`lname`=:lname,`username`=:username,';
+            $sql .= ' `password`=:password,`idcard`=:idcard,`mobile`=:mobile,';
+            $sql .= ' `email`=:email,`address`=:address,';
+            $sql .= ' `updatedate`=NOW(),`updateby`=:by ';
+            $sql .= ' WHERE `id`=:person_id';
+            $stmt = $pdo->conn->prepare($sql);
+            $exe = $stmt->execute($values);
+            if ($exe) {
+                $stmt = $pdo->conn->prepare('SELECT * FROM person WHERE id=:person_id');
+                $stmt->execute(array(
+                    ':person_id' => $person_id,
+                ));
+                $result = $stmt->fetch(PDO::FETCH_OBJ);
+                $person = $_SESSION['person'] = $result;
+
+                echo $pdo->returnJson(true, 'แก้ไขข้อมูลสำเร็จ', 'แก้ไขข้อมูลสำเร็จ', '');
+            } else {
+                echo $pdo->returnJson(false, 'เกิดข้อผิดพลาด', 'บันทึก ไม่สำเร็จ [ ' . $sql . ' ]', '');
+            }
+        } catch (Exception $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+        $pdo->close();
+        break;
+    case 'getProfile':
+        $person = $_SESSION['person'];
+        echo json_encode($person);
+        break;
     case 'delete':
         try {
             $pdo->conn = $pdo->open();

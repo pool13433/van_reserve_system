@@ -8,6 +8,7 @@ define('EMPLOYEE_ID', 1);
 define('ONWER_ID', 2);
 define('CUSTOMER_ID', 3);
 define('DRIVER_ID', 4);
+define('MANAGER_ID', 5);
 define('GENARAL_ID', 0);
 
 
@@ -22,8 +23,13 @@ define('PLACE_END', 'place_end');
 
 define('SESSON_PERSON_ID', 1);
 
+function arrayPersonStatusId() {
+    //สถานะ EMPLOYEE_ID=>1,ONWER_ID=>2,CUSTOMER_ID=>3 ,DRIVER_ID => 4,GENARAL_ID => 0,5=MANAGER
+    return ['GEN', 'EMP', 'OWN', 'CUS', 'DRI', 'MAN'];
+}
+
 function arrayPersonStatus() {
-    $arrayPersonStatus = array(
+    return array(
         '0' => array(
             'DEFIND_ID' => 'GENARAL_ID',
             'NAME' => 'ผู้ใช้งานทั่วไป'
@@ -44,8 +50,11 @@ function arrayPersonStatus() {
             'DEFIND_ID' => 'DRIVER_ID',
             'NAME' => 'พนักงานขับรถ'
         ),
+        '5' => array(
+            'DEFIND_ID' => 'MANAGER_ID',
+            'NAME' => 'ผู้จัดการ'
+        ),
     );
-    return $arrayPersonStatus;
 }
 
 function arrayReserveStatus() {
@@ -65,6 +74,19 @@ function arrayReserveStatus() {
         '3' => array(
             'BGCOLOR' => 'warning',
             'NAME' => 'เกินระยะเวลาการชำระเงิน'
+        ),
+    );
+}
+
+function arrayPaymentStatus() {
+    return array(
+        '0' => array(
+            'BGCOLOR' => 'warning',
+            'NAME' => 'ชำระเงินไม่สำเร็จ'
+        ),
+        '1' => array(
+            'BGCOLOR' => 'success',
+            'NAME' => 'ชำระเงินสำเร็จ'
         ),
     );
 }

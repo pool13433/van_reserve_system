@@ -45,23 +45,7 @@ if (!empty($_GET['id'])) {
 }
 $form_title = '';
 if (!empty($_GET['status'])) {
-    switch (intval($_GET['status'])) {
-         case 0:
-            $form_title = 'จัดการผู้ใช้งานทั่วไป';
-            break;
-        case 1:
-            $form_title = 'จัดการเจ้าหน้าที่ดูแลระบบ';
-            break;
-        case 2:
-            $form_title = 'จัดการเจ้าของวินรถตู้';
-            break;
-        case 3:
-            $form_title = 'จัดการลูกค้า';
-            break;
-        case 4:
-            $form_title = ' จัดการพนักงานขับรถ';
-            break;
-    }
+    $form_title = 'จัดการ '.getDataListByKey($_GET['status'], arrayPersonStatus(), 'NAME');
 }
 ?>
 

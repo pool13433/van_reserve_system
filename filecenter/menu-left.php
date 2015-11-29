@@ -35,6 +35,12 @@ $authen = $_SESSION['person'];
                                 <a href="index.php?page=list-person&status=<?= DRIVER_ID ?>">จัดการพนักงานขับรถ</a>
                             </td>
                         </tr>
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <span class="glyphicon glyphicon-apple text-info"></span>
+                                <a href="index.php?page=list-person&status=<?= MANAGER_ID ?>">จัดการ ผู้จัดการ</a>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -68,6 +74,11 @@ $authen = $_SESSION['person'];
                         <tr>
                             <td onclick="setAccordion(this)">
                                 <a href="index.php?page=list-van">จัดการ=> จัดรถตู้</a>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td onclick="setAccordion(this)">
+                                <a href="index.php?page=form-setting">จัดการ=> ตั้งค่าค่าบริการ</a>
                             </td>
                         </tr> 
                     </table>

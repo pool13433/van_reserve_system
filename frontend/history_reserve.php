@@ -75,7 +75,7 @@ include '../mysql_con/PDOMysql.php';
                         <td>
                             <span class="label label-<?= getDataListByKey($value->rs_status, arrayReserveStatus(), 'BGCOLOR') ?>">
                                 <?= getDataListByKey($value->rs_status, arrayReserveStatus(), 'NAME') ?>
-                            </span>                            
+                            </span>
                         </td>
                         <td>
                             <div class="dropdown">
@@ -94,6 +94,11 @@ include '../mysql_con/PDOMysql.php';
                                     <li>
                                         <a href="#" onclick="printInvoiceByCase(<?= $value->rs_id ?>)">
                                             <i class="glyphicon glyphicon-print"></i> ปริ้นใบจ่ายเงิน      
+                                        </a>   
+                                    </li>
+                                    <li>
+                                        <a href="index.php?page=reserve_payment&id=<?= $value->rs_id ?>">
+                                            <i class="glyphicon glyphicon-usd"></i> ไปแจ้งการขำระเงิน      
                                         </a>   
                                     </li>
                                     <li>
@@ -135,13 +140,13 @@ include '../mysql_con/PDOMysql.php';
             return false;
         }
     }
-    function editReserve(reserve_id){
-        $.get('../actionDb/reserve.php?action=setSessionEditReserve',{reserve_id:reserve_id},function(response){
-            if(response.status){
-                redirectDelay(response.url,1);
-            }else{
+    function editReserve(reserve_id) {
+        $.get('../actionDb/reserve.php?action=setSessionEditReserve', {reserve_id: reserve_id}, function (response) {
+            if (response.status) {
+                redirectDelay(response.url, 1);
+            } else {
                 alert(response.message);
             }
-        },'json');
+        }, 'json');
     }
 </script>

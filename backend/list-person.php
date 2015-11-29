@@ -1,17 +1,12 @@
 <?php
 require_once '../mysql_con/PDOMysql.php';
 $status = (empty($_GET['status']) ? '' : $_GET['status']);
-$person_title = array(
-    '1' => 'จัดการเจ้าหน้าที่ดูแลระบบ',
-    '2' => '',
-    '3' => 'จัดการลูกค้า',
-    '4' => 'จัดการพนักงานขับรถ',
-);
+$person_title = getDataListByKey($_GET['status'], arrayPersonStatus(), 'NAME');
 ?>
 <div class="panel panel-primary">
     <div class="panel-heading clearfix">
         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">
-            <i class="glyphicon glyphicon-list-alt"></i> รายการแสดง<?php echo $person_title[$status] ?>
+            <i class="glyphicon glyphicon-list-alt"></i> รายการแสดง<?php echo $person_title ?>
         </h4>
         <div class="btn-group pull-right">
             <a href="index.php?page=form-person&status=<?= $status ?>" class="btn btn-info">

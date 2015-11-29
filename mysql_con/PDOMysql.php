@@ -68,6 +68,7 @@ class PDOMysql {
     }
 
     function createPersonSerialCode($personStatus) {
+        $arrayStatusId = ['GEN', 'EMP', 'OWN', 'CUS', 'DRI', 'MAN'];
         $pdo = new PDOMysql();
         $pdo->conn = $pdo->open();
         //SELECT LPAD(CONVERT(RIGHT(`code`, 4),UNSIGNED INTEGER),4,0) as newnumber FROM `person`         
@@ -77,6 +78,7 @@ class PDOMysql {
         $sql .= ' WHEN 2 THEN \'ONW\'';
         $sql .= ' WHEN 3 THEN \'CUS\'';
         $sql .= ' WHEN 4 THEN \'DRI\'';
+        $sql .= ' WHEN 5 THEN \'MAN\'';
         $sql .= ' WHEN 0 THEN \'GEN\'';
         $sql .= ' ELSE \'ERR\'';
         $sql .= ' END prefix_status,';
@@ -90,12 +92,16 @@ class PDOMysql {
         $stmt = $pdo->conn->prepare($sql);
         $stmt->execute(array(':status' => $personStatus));
         $result = $stmt->fetch(PDO::FETCH_OBJ);
-
-        $prefix = $result->prefix;
-        $runnumber = $result->runnumber;
-        $year_ad = $result->year_ad;
-        $newrunnumber = $result->new_runnumber;
-        return $prefix . $year_ad . $newrunnumber;
+        if ($result) {
+            $prefix = $result->prefix;
+            $runnumber = $result->runnumber;
+            $year_ad = $result->year_ad;
+            $newrunnumber = $result->new_runnumber;
+            return $prefix . $year_ad . $newrunnumber;
+        } else {
+            //MAN580003
+            return $arrayStatusId[strval($personStatus)] . substr((date('Y') + 543), 2) . '0001';
+        }
     }
 
     public function createReserveVanCode() {
