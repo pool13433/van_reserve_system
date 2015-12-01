@@ -20,7 +20,7 @@
                     </div> 
                 </div>
             </div>
-            <div class="form-group">
+<!--            <div class="form-group">
                 <label for="person_char" class="col-sm-2 control-label">จุดขึ้น-ลง</label>
                 <div class="col-sm-8">
                     <div class="input-group">        
@@ -80,7 +80,7 @@
                         </select>
                     </div> 
                 </div>
-            </div>
+            </div>-->
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary">

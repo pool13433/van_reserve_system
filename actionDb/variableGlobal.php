@@ -25,7 +25,7 @@ define('SESSON_PERSON_ID', 1);
 
 function arrayPersonStatusId() {
     //สถานะ EMPLOYEE_ID=>1,ONWER_ID=>2,CUSTOMER_ID=>3 ,DRIVER_ID => 4,GENARAL_ID => 0,5=MANAGER
-    return ['GEN', 'EMP', 'OWN', 'CUS', 'DRI', 'MAN'];
+    return array('GEN', 'EMP', 'OWN', 'CUS', 'DRI', 'MAN');
 }
 
 function arrayPersonStatus() {
@@ -80,13 +80,17 @@ function arrayReserveStatus() {
 
 function arrayPaymentStatus() {
     return array(
+         '' => array(
+            'BGCOLOR' => 'default',
+            'NAME' => 'ทั้งหมด'
+        ),
         '0' => array(
             'BGCOLOR' => 'warning',
-            'NAME' => 'ชำระเงินไม่สำเร็จ'
+            'NAME' => 'ไม่ชำระเงินตามกำหนด'
         ),
         '1' => array(
             'BGCOLOR' => 'success',
-            'NAME' => 'ชำระเงินสำเร็จ'
+            'NAME' => 'ชำระเงินเรียบร้อย'
         ),
     );
 }
