@@ -9,8 +9,9 @@ $sql = ' select rs.rs_code, concat(per.fname ,\' \',per.lname) as name, rp.vp_pa
 $sql .= ' from reserve rs,reserve_pay rp, person per ';
 $sql .= ' WHERE rs.rs_id = rp.rs_id ';
 $sql .= ' AND rs.cus_id = per.id ';
-$sql .= ' AND rp.vp_status = '. $status;
-
+if (is_numeric($status)){
+    $sql .= ' AND rp.vp_status = '. $status;
+}
 
 $pdo = new PDOMysql();
 $pdo->conn = $pdo->open();

@@ -1,7 +1,7 @@
 <?php include '../mysql_con/PDOMysql.php'; ?>
 <?php
 if (empty($_GET['van_id'])) {
-    echo '<div class="alert alert-danger" role="alert"> *** กรุณาเลือก ชื่อสายรถตู่ก่อน ***</div>';
+    echo '<div class="alert alert-danger" role="alert"> *** กรุณาเลือก ชื่อสายรถตู้ก่อน ***</div>';
     exit();
 } else {
     $pdo = new PDOMysql();

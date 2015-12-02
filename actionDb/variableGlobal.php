@@ -23,6 +23,23 @@ define('PLACE_END', 'place_end');
 
 define('SESSON_PERSON_ID', 1);
 
+$thai_day_arr = array("อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์");
+$thai_month_arr = array(
+    "" => "",
+    "01" => "มกราคม",
+    "02" => "กุมภาพันธ์",
+    "03" => "มีนาคม",
+    "04" => "เมษายน",
+    "05" => "พฤษภาคม",
+    "06" => "มิถุนายน",
+    "07" => "กรกฎาคม",
+    "08" => "สิงหาคม",
+    "09" => "กันยายน",
+    "10" => "ตุลาคม",
+    "11" => "พฤศจิกายน",
+    "12" => "ธันวาคม"
+);
+
 function arrayPersonStatusId() {
     //สถานะ EMPLOYEE_ID=>1,ONWER_ID=>2,CUSTOMER_ID=>3 ,DRIVER_ID => 4,GENARAL_ID => 0,5=MANAGER
     return array('GEN', 'EMP', 'OWN', 'CUS', 'DRI', 'MAN');
@@ -80,7 +97,7 @@ function arrayReserveStatus() {
 
 function arrayPaymentStatus() {
     return array(
-         '' => array(
+        '' => array(
             'BGCOLOR' => 'default',
             'NAME' => 'ทั้งหมด'
         ),
@@ -120,3 +137,17 @@ function getDataListByKey($params, $list, $keyName) {
         return $result;
     endif;
 }
+
+function arrayYear($lengths = 10) {
+    $arrayYear = array();
+    $years = date('Y');
+    for ($i = $years; $i > ($years - $lengths); $i--) {
+        $arrayYear[] = array(
+            'BC' => intval($i),
+            'AD' => intval($i + 543)
+        );
+    }
+    return $arrayYear;
+}
+
+
