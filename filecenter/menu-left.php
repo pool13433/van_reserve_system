@@ -131,7 +131,7 @@ $authen = $_SESSION['person'];
                         <tr>
                             <td onclick="setAccordion(this)">
                                 <span class="glyphicon glyphicon-shopping-cart"></span>
-                                <a href="index.php?page=">รายงานข้อมุลการแจ้งยกเลิกการจองรถตู้</a>
+                                <a href="index.php?page=report_cancel_reserve">รายงานข้อมุลการแจ้งยกเลิกการจองรถตู้</a>
                             </td>
                         </tr>
                         <tr>
@@ -143,7 +143,7 @@ $authen = $_SESSION['person'];
                         <tr>
                             <td onclick="setAccordion(this)">
                                 <span class="glyphicon glyphicon-shopping-cart"></span>
-                                <a href="index.php?page=">รายงานยอดขายของพนักงาน</a>
+                                <a href="index.php?page=report_sales">รายงานยอดขายของพนักงาน</a>
                             </td>
                         </tr>
                     </table>

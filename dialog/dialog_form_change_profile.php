@@ -28,17 +28,9 @@ $address = $person->address;
                     <div id="error-message-wrapper"> </div>
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label for="code" class="col-sm-4 control-label">รหัสบัตรพนักงาน</label>
-                            <div class="col-sm-6">
-                                <input type="hidden" class="form-control" name="id" value="<?= $id ?>"/>
-                                <input type="text" class="form-control" name="code" placeholder="รหัสบัตรพนักงาน" 
-                                       required data-bv-notempty-message="กรุณากรอกรหัสบัตรพนักงาน" 
-                                       value="<?= $code; ?>" readonly/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
                             <label for="idcard" class="col-sm-4 control-label">รหัสบัตรประชาชน</label>
                             <div class="col-sm-6">
+                                <input type="hidden" name="id" value="<?=$id?>"/>
                                 <input type="text" class="form-control" name="idcard" placeholder="รหัสบัตรประชาชน" 
                                        required data-bv-notempty-message="กรุณากรอกรหัสบัตรประชาชน" maxlength="13"
                                        value="<?= $idcard; ?>"/>
@@ -50,7 +42,7 @@ $address = $person->address;
                             <label for="fname" class="col-sm-4 control-label">ชื่อเข้าใช้งานระบบ</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" name="username" placeholder="ชื่อเข้าใช้งานระบบ" 
-                                       required data-bv-notempty-message="กรุณากรอก username" readonly
+                                       required data-bv-notempty-message="กรุณากรอก username"
                                        value="<?= $username; ?>"/>
                             </div>
                         </div>
@@ -96,7 +88,7 @@ $address = $person->address;
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label for="fname" class="col-sm-4 control-label">อีเมลล์</label>
+                            <label for="email" class="col-sm-4 control-label">อีเมลล์</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" name="email" placeholder="อีเมลล์" 
                                        required data-bv-notempty-message="กรุณากรอกอีเมลล์" 
@@ -104,7 +96,7 @@ $address = $person->address;
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="lname" class="col-sm-4 control-label">เบอร์โทรศัพท์</label>
+                            <label for="mobile" class="col-sm-4 control-label">เบอร์โทรศัพท์</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" name="mobile" placeholder="เบอร์โทรศัพท์ 10 หลัก" 
                                        required data-bv-notempty-message="กรุณากรอกเบอร์โทรศัพท์"  maxlength="10"
@@ -114,7 +106,7 @@ $address = $person->address;
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="fname" class="col-sm-2 control-label">อีเมลล์</label>
+                            <label for="address" class="col-sm-2 control-label">อีเมลล์</label>
                             <div class="col-sm-8">
                                 <textarea class="form-control" name="address"><?=$address?></textarea>
                             </div>

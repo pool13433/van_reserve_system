@@ -1,5 +1,5 @@
 <?php
-
+require '../actionDb/variableGlobal.php';
 require '../assets/sdk/facebook.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -79,7 +79,7 @@ function checkEmptyUserProfile($pdo, $facebookId) {
 function createUserProfile($pdo, $user_profile) {
     $values = array(
         ':facebookId' => trim($user_profile["id"]),
-        ':code' => '',
+        ':code' => genUserCode($pdo),
         ':fname' => trim($user_profile["first_name"]),
         ':lname' => trim($user_profile["last_name"]),
         ':username' => '',
@@ -99,6 +99,11 @@ function createUserProfile($pdo, $user_profile) {
     $stmt = $pdo->conn->prepare($sql);
     $exe = $stmt->execute($values);
     return $exe;
+}
+
+function genUserCode($pdo){
+    $code =  $pdo->createPersonSerialCode(CUSTOMER_ID);
+    return $code;
 }
 
 function sesSessionUserProfile($pdo, $facebookId) {
